@@ -1,31 +1,39 @@
 # FEBRUARY 30th
 
-A first-person horror game about the day after your birthday.
+A first-person sad-horror game about the day after your birthday.
 
 You are eleven years old. Tonight is **February 29th** — the rarest birthday there
-is. Your party is over. At 00:00 you wake to knocking from your bedroom cupboard.
+is. Your mother has never got it right before. This year she finally did.
+
+At 00:00 you wake to knocking from your bedroom cupboard.
 
 There is a boy in there. He has your face, your hair, the tooth you lost in
 January. He is wearing clothes that are almost yours, but wrong: a party hat two
 sizes too small, a shirt buttoned inside-out, a jacket with the sleeves cut at
 two different lengths.
 
-He says tonight is his birthday.
-
-He says it is the **30th**.
+He says tonight is his birthday. He says it is the **30th**.
 
 There is no 30th of February. There is no 30th of anything.
 
-When you open the cupboard door to comfort him, the door is the size of a room.
+When you open the door to comfort him, the door is the size of a room. He comes
+with you. And he tells you the whole of what he wants:
+
+> *"I want a party."*
+>
+> *"That's it. That's the whole of it."*
+
+You have four hours to give it to him.
 
 ---
 
 ## The pitch in one line
 
-> A birthday is a promise that somebody will show up. This game is about the
-> child nobody showed up for.
+> **You spend the whole game walking beside someone toward the thing they want
+> most. You know it will kill them. You will do it anyway, because they asked
+> nicely, and because you are eleven, and because that is what a birthday is.**
 
-Full narrative: [`docs/story.md`](docs/story.md)
+Full plot: [`docs/plot.md`](docs/plot.md)
 
 ## Contents
 

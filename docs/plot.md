@@ -1,22 +1,27 @@
-# FEBRUARY 30th — Plot
+# FEBRUARY 30th — Plot (v3)
 
-> v2. Replaces the draft. The previous version had a neat idea and no story.
-> This one is built around the 30th itself.
+> **Sad horror.** Not uncanny bureaucracy. Ghosts, monsters, a companion, and a
+> death.
+>
+> Rewritten after design review: the player now travels *with* the Boy through
+> all five acts, the 30th contains real monsters and ghosts, and the ending is
+> not a choice — it is a price.
 
 ---
 
 ## 1. Premise
 
-You are eleven. Tonight is **February 29th** — the rarest birthday there is,
-happening once every four years. Your mother has never got it right. This year
-she finally did: there is a cake on the table with eleven candles and the right
-number on it, and there were people in the house, and it was, for about four
-hours, a real birthday.
+You are eleven. Tonight is **February 29th** — the rarest birthday there is.
+
+Your mother has never got it right. The 27th one year, the 1st the next, "the
+last Friday of February" the year after. This year she finally did it: a cake on
+the table, eleven candles, the correct number on it, people in the house. For
+about four hours it was a real birthday.
 
 At midnight you wake to knocking from the cupboard under your window. Three
-knocks, a pause, three knocks.
+knocks. A pause. Three knocks.
 
-Inside is a boy who has your face. Your cowlick. The gap where your front right
+Inside is a boy with your face. Your cowlick. The gap where your front right
 tooth used to be. He is wearing clothes that are almost yours and specifically
 not — a party hat two sizes too small, a shirt buttoned inside-out, a jacket cut
 uneven at the hem.
@@ -30,358 +35,337 @@ He says: *"Not down here."*
 When you open the door to look at him properly, the door is nine feet tall and
 the inside of the cupboard is a hallway.
 
+**He comes with you. He never leaves your side. And he tells you what he wants
+before you have gone ten metres:**
+
+> *"I want a party."*
+>
+> *"That's it. That's the whole of it. I just want a party."*
+
 ---
 
 ## 2. Why there is a 30th
 
-**This is the load-bearing part of the plot, so it needs to be exact.**
+A calendar is a machine with too many days and not enough boxes. Once every four
+years it gets an extra day. There are two ways to account for it:
 
-### The calendar cannot waste a day
+- **Keep it** → February 29th
+- **Throw it away** → February 30th
 
-A calendar is a machine with a fixed number of boxes and too many days to put in
-them. Once every four years there is an extra day, and the machine has to
-account for it.
+**February 30th is the discard day.**
 
-There are two ways to account for an extra day. You can **keep** it — and that's
-February 29th. Or you can **discard** it — and that discarded day has to go
-somewhere.
+But a day can only be discarded if it is empty. And once a year the world
+generates a surplus birthday, because leap-day birthdays are the one kind the
+world reliably, routinely forgets. No card in the shop. Schools get the form
+wrong. So every unacknowledged birthday goes in the discard bin.
 
-It goes to February 30th.
+**February 30th is a landfill made of forgotten birthdays — and it is
+over-full.** Every cancelled party, every child told "next year" four years
+running, every kid collected too late. All of it in one day with no room.
 
-**February 30th is the day the calendar throws away.**
-
-### But you cannot discard a day that has something in it
-
-Here is the whole plot.
-
-A day can only be discarded if it is empty. The 30th is not empty, and it cannot
-be made empty, because once a year the world generates a **surplus birthday** —
-and the world is *terrible* at acknowledging leap-day birthdays. No card in the
-shop. Schools get the form wrong. Grandparents forget. There are entire families
-who have never once celebrated on the right day.
-
-So once every four years the calendar produces more birthdays than the calendar
-can *hold*, and every one that goes unacknowledged has to be put in the discard
-bin.
-
-Which is the 30th.
-
-**February 30th is a landfill made of unacknowledged birthdays.** It is not a
-hell. It is not a realm. It is **paperwork** — a ledger error with children in
-it. There is no ancient evil here. There is a filing problem.
-
-### And it is over-full
-
-This is the part that makes it frightening.
-
-The 30th is a single day holding every unacknowledged birthday in it, **all at
-once, all overlapping, none of them given enough room.** Every cancelled party.
-Every child told "next year" four years running. Every kid who got a card signed
-by a stranger. All of it poured into one day because there was nowhere else to
-put it.
-
-So the 30th is not empty and dark. **The 30th is crowded.** It is the most
-over-attended birthday that has ever happened. And every child there is the same
-child, because the calendar could only think of one shape to pour them into.
+That is where the monsters are.
 
 ---
 
-## 3. Why *your* birthday matters
+## 3. The Boy is a crowd
 
-You are a leap-day child. And leap-day children are, in a measurable and
-well-documented way, **the calendar's rounding error** — the category of human
-being that systems reliably, repeatedly, quietly forget.
+He is not one child. He is every unacknowledged birthday in the calendar,
+compressed into one shape, because the 30th could only think of one child to
+pour them into.
 
-So the 30th did not choose you at random.
+He wears your face because **you are the most recent thing that nearly went
+in.** When you were seven, your mother celebrated on the 27th. You were in that
+pile. You are the reason he has a face you can recognise.
 
-**You were nearly in it.**
+He is not lying to you and he is never cruel. He is eleven, he is alone, and he
+has told you the whole of what he wants. He does not know it will kill him.
 
-Four years ago, when your mother celebrated on the 27th because she genuinely
-thought that was right, you were, from the calendar's point of view, unacknowledged
-and surplus. You were one more forgotten birthday. Tonight you are eleven and you
-had a real party and a correct cake, and that is the *only* reason you are
-standing here instead of in there.
+**He does not know that. You find out in Act IV.**
 
-You are the item that almost went in the bin.
+That asymmetry — he is asking for the one thing, and you are the only person who
+knows the price — is the whole game.
 
 ---
 
-## 4. The boy in the cupboard
+## 4. The monsters
 
-He is **not one child.**
+> **Design rule: every monster in this game is a disappointed child.**
+>
+> No creatures. No gore. No adults-monsters. If it is not a child who was let
+> down, it is not in the game.
 
-He is every unacknowledged birthday in the history of the calendar, compressed.
-There was no room on the 30th for four thousand separate children, so the 30th
-made one, and the one it made is eleven years old, because eleven is what he
-looks like, and he has your face because you are the most recent thing nearly
-put in there.
+### The Unacknowledged
 
-**He is a crowd wearing one child.**
+The main ghosts. *Specific* forgotten children — the individuals, where the Boy
+is the aggregate. They are everywhere in Acts I–III, and they are **furious**,
+because the Boy is getting a wish and they are not.
 
-This reframes the entire first act retroactively. Every time you meet another
-child with your face, you are meeting a fragment of him. In Act III there are
-twelve of them, and only one is *him*, and you work that out by checking a scar.
+They flicker. They are clear in peripheral vision and gone when you look
+straight at them.
 
-He is not lying to you, and he has never once been cruel to you. He is eleven,
-he is alone, and he is asking for the only thing he knows how to ask for.
+**They ask you a question.** *"Is this my birthday?"*
+
+| You say | What happens |
+| --- | --- |
+| **"Yes."** | They accept it. They stop, and they go quiet, and they are gone. |
+| **"No."** / silence / you run | They take it out of you. You lose a memory of your own birthday. |
+
+**You cannot kill anything in this game.** Every ghost can only be *helped* or
+*avoided*, and helping them costs you something. That is the horror game's whole
+mechanical identity: the correct response to every threat is **compassion**, and
+compassion is expensive.
+
+There are not enough of you to go around, and the game never tells you that you
+could have ignored them all and been fine.
+
+### The Late
+
+Act III. Children who will not leave a waiting room. They do not chase, they do
+not threaten — they *wait*, and they are patient in a way that gets worse the
+longer you look.
+
+If you stay in the hall, their faces start to change into faces that have been
+waiting for a very long time.
+
+The way past them is to go and talk to each one, and to say the thing that has
+not been said to them, and it takes a very long time and it is worth it.
+
+### The Almost
+
+Act IV. Adults, translucent, going through the motions of a party that is not
+happening. They do not hurt you. They are the saddest thing in the game and they
+are not a threat at all.
+
+They are the people who almost came.
 
 ---
 
 ## 5. Your mother
 
-**She is the reason the party happened at all.**
+**She is the reason the 29th exists as a day you can spend.** She is the only
+person who ever remembered your birthday, and this year she finally got it
+right.
 
-She is the reason there is a cake with the correct number on it. She is the only
-person who has ever remembered your birthday, and she gets it wrong most years —
-she celebrated you on the 27th, then the 1st, then "the last Friday of
-February" — but this year she got it right.
+She appears exactly **three times** and never gets a cutscene:
 
-That is the entire reason tonight is happening. **One person's memory is the
-only thing standing between you and the 30th.**
+| Act | Where | What she does |
+| --- | --- | --- |
+| I | A garden, among the Guests, motionless, facing the street | Nothing. Most players miss her. |
+| II | Driving | *"We'll be there soon."* Does not look at you. |
+| IV | Your kitchen table, with the Boy | Both say *happy birthday* to nobody. |
 
-And she is one floor away. She is alive. She has no idea any of this is
-happening. She is the most important character in the game and she never gets a
-cutscene.
+She is one floor away for the entire game. **The player never rescues her and
+she never knows.** That is deliberate and non-negotiable.
 
 ---
 
-## 6. The plot, beat by beat
+## 6. The plot
 
-### ACT I — 29TH STREET · the party that ended
+### ACT I — 29TH STREET
 
-You fall through the cupboard into your own street. Every mailbox has your house
-number on it. The party is over — balloons deflating *upward*, adults standing
-motionless in gardens, all facing the street, none of them moving, none of them
-turning.
+You come through the cupboard into your own street. Every mailbox has your house
+number on it. The party ended hours ago and nobody will acknowledge it ever
+happened. Balloons deflating *upward*. Adults standing motionless, facing the
+street. The Boy walks beside you the whole time, talking, because he is pleased
+to have someone.
 
-They are the parents from every party that ended badly, held in place, facing
-the only direction that matters.
+The **Unacknowledged** start appearing — a girl at the edge of the light asking
+if it's her birthday. The Boy does not understand why that is a hard question.
 
-The Boy walks you to his house and gives you the only rule that matters:
-**they notice you. That is all. If they notice you, you go back.** There is no
-chase. The danger is *being recognised*.
+You find the cake. It is still there. Eleven candles, correct number, and the
+name spelled right.
 
-You collect three party favours and bring them back to him. When you hand over
-the third, the street goes silent and every Guest has turned to face the other
-way. No animation. They simply now face elsewhere.
+> **Act I ends** with the first Unacknowledged you *help*, and the first one you
+> ignore, and you feeling the difference.
 
-He thanks you and gives you a photograph from inside the house — and in the
-photograph, standing next to him, is a boy with your face who is **not you**.
+### ACT II — THE LONG WAY
 
-> **Act I ends with the first hard question:** the Boy is not alone, and neither
-> are you.
+The road out. Cars going the other way, all of them full, everyone facing
+forward, **one passenger too many in the back seat.** It is in every car and it
+is never explained.
 
-### ACT II — THE LONG WAY · the drive that never arrived
+You get into one. The driver is your mother. She does not look at you. She says
+*"we'll be there soon."* The radio plays tomorrow's news backwards and one word
+comes through clearly, forwards: your name.
 
-The road out. Two kilometres of highway that loops, with cars going the other way
-at intervals, all of them full, all of them facing forward, all of them with
-**one passenger too many in the back seat**. No light inside. They never stop and
-they never crash. They are simply always passing.
+> **Act II's job:** the 30th knows your family. It is not somewhere you stumbled
+> into.
 
-You get into a car. The driver is your mother. She does not look at you. She
-says **"we'll be there soon."** The radio plays tomorrow's news backwards, and
-one word comes through clearly, forwards: your name.
+### ACT III — LOST AND FOUND
 
-> **Act II's job:** the 30th has *her* in it. It knows your family. This is not
-> a place you stumbled into — it is a place that was already expecting you.
+A cloakroom of coats nobody collected. The **Late** — children still waiting to
+be picked up, patient, going quiet. The Boy finds his own coat and is happy
+about it for about four seconds.
 
-### ACT III — LOST AND FOUND · the kid nobody picked up
+There are twelve children with your face. **You have to work out which one is
+him.** Check the tooth, the cowlick, the scar. Wrong answer and the room resets
+and no one ever tells you what happened to the child you chose.
 
-A school corridor, then a hall of coat racks extending past the fog. Twelve
-children standing among them, all with your face, all waiting to be collected.
+### ACT IV — THE AFTER — where you find out
 
-Exactly one is the Boy. The other eleven are fragments of him — the cancelled
-parties, the four-years-running promises, the kids who got collected too late.
+A waiting room. Six objects belonging to six different children, and you put
+their days back together, and the answer is that there is no answer — six
+separate ordinary nights where six separate adults each forgot a different
+child's birthday.
 
-You verify each one against evidence you carry: a photograph, a bracelet, a
-birthday hat, a scar on the correct knee. **Getting it wrong is not death — it is
-a scream and a restart of the hall.** The game never shows you what happens to
-the child you chose. It never explains. It just resets, quietly.
+**And then the Boy asks you what happens after the party.**
 
-The coat that fits you is your coat. The name tag reads your name with one
-letter wrong. He wants you to wear it. Wearing it is optional. The game never
-asks you to.
+You tell him the truth, or you do not, and either way **he now knows.**
 
-You find the real Boy, and he tells you the second hard thing:
+> *"Will I still be here in the morning?"*
 
-> **"There isn't room for me in here."**
->
-> **"There hasn't been for a long time."**
+He thinks about it. He says:
 
-### ACT IV — THE AFTER · the adults who forgot
+> *"That's alright. As long as it's the right morning."*
 
-A waiting room. Six objects belonging to six different children, and you
-reconstruct the day they were all forgotten on.
+Then the room resolves into your living room and he is at your table with your
+mother and they say *happy birthday* to somebody who is not in the room yet.
 
-The reconstruction is the twist of the game, and it is quiet.
+**This is the moment the game stops being about escaping and starts being about
+what you are willing to do for someone.** Act V is not an escape. It is a
+delivery.
 
-**It is not one child's day.** Every item belongs to a different person. None of
-them know each other. There is no mastermind, no tragedy, no villain — just six
-separate ordinary nights, in six different years, where six different adults each
-forgot a different child's birthday.
-
-The Boy is not a person with a history. He is a **pile of other people's
-forgotten children**, assembled by a filing system that could only think of one
-shape to pour them into.
-
-Then the room resolves into your living room. The Boy is at your table with your
-mother, and both of them say *happy birthday* — to somebody who is not in the
-room yet.
-
-Nothing else happens. The light does not change. Your mother does not look
-disturbed.
-
-> **Act IV's job:** you learn that refusing is allowed. The game has never once
-> suggested you have to save him.
-
-### ACT V — THE 30TH · the party, at full scale
+### ACT V — THE 30TH
 
 A cathedral-scale room built of printed calendar pages. February is red. The 30th
 is printed and still wet, and you can see it being printed by a machine you
 cannot find.
 
-At the far end, the party. It is enormous. It is for you.
+**And it is full.** Four hundred children, all having a birthday, all with your
+face. They are the crowd the Boy was made of. They are all having a party
+simultaneously because there was no other way to hold them.
 
-**There are four hundred children in it and every one of them has your face.**
+They are not monsters. That is the horror. They are just children, having a
+birthday, all at once, in a room with no room in it.
 
-The Boy explains himself completely and makes the offer, and it is a reasonable
-offer, which is the problem:
+**To give the 30th a real day, one real February day has to stop existing.** The
+only one available is the 29th. You offer it. He is confused, then he is not,
+then he asks if you're sure, three times, because he is a good kid.
 
-> *"There's no room for me on the thirtieth. There's only ever been room for
-> about one."*
+The party happens.
+
+---
+
+## 7. The wish comes true, and then he dies
+
+### The party
+
+The room resolves into something small and warm — not the cathedral, just a
+kitchen, a table, a cake. Eleven candles. The name on the cake is **misspelled,
+one letter**, the same letter as the coat, because nobody could get it right.
+
+He looks at the cake for a long time. He does not speak.
+
+> *"Is this the real one?"*
 >
-> *"I could have a birthday if there was a day. There isn't one. But if there
-> were a day, I would have had one."*
->
-> *"You'd only have to let go of a real one."*
+> *"Yeah. This is it."*
 
-**To give February 30th a day to exist, one real February day has to stop
-existing.** And there is only one available. It is the 29th — the day your mother
-finally got right, the day you almost didn't have at all.
+He blows out the candles.
 
-The offer is not "trade yourself." It is **"let your birthday stop being real so
-mine can start."**
+And for a moment he is just a kid at his birthday, and he has never been that
+before, and he is **very happy**.
 
----
+### The price
 
-## 7. The ending
+And then the room goes quiet in a way that rooms do not.
 
-One prompt. Three answers.
+**He does not fall down.** That is the thing. No collapse, no gasp, no blood,
+nothing to clean up.
 
-### A — "It's my birthday too"
+**He just gets less.**
 
-You give him the 29th.
+The party was paid for out of him. That was always the arrangement — the 30th is
+built entirely out of him, four hundred children packed into one shape, and the
+only way it could become a real day for one night was if he held all of it at
+once. He did. He is holding it now.
 
-He gets it. He gets a real cake, in a real house, with a real mother who will
-remember him forever — because he is now a leap-day child and leap-day children
-are the one thing this house knows how to love.
+And a real day has to end, and when it ends the crowd goes home, and it takes
+the part of him that was them.
 
-You are on the 30th. You are one more unacknowledged birthday in an overcrowded
-day, and you will be compressed into the Boy by the next leap year.
+He gets thinner, then smaller, then just — *present*. He does not scream. He does
+not reach for you. He is **not frightened**, which is the detail that breaks
+people.
 
-Your mother celebrates on the 27th next year. She will not know why that hurts.
+The last thing he says:
 
-**Cost:** you chose to be forgotten by the only person who ever remembered you,
-so that one more person could be remembered.
+> *"Did I do it right?"*
 
-### B — "Blow out the candles"
+And you:
 
-You blow out the candles on a cake set for a child who is not in the room.
+> *"Yeah. You did."*
 
-The 30th collapses — not violently. **Administratively.** A bad ledger row gets
-deleted. The crowd is erased, and with it every forgotten birthday in the whole
-history of the calendar, because they were all in the same pile.
+He smiles. And then there is a party hat on the table that is not his size, and
+the candles are still warm, and the room is empty, and it is over.
 
-You survive. You go home.
-
-And the calendar is now **perfect.** You ate the 30th. There is no discard day,
-no overflow, no box for anything that doesn't fit — which means nothing can be
-discarded, ever again.
-
-Nothing gets forgotten. Including, eventually, the things that *should* be. It is
-a perfect ledger and there is no room in it for a mistake.
-
-Your mother looks at a cake on the table and does not know what day it is.
-
-**Cost:** you solved the problem by removing the safety margin, and now there is
-nowhere left for anything to go when it doesn't fit.
-
-### C — "What day is it?"
-
-The one that is hard to reach.
-
-You do not trade and you do not destroy. You tell him something he has never been
-told:
-
-**Your mother remembered you.**
-
-Not him. *You.* She got it wrong for years and she got it right this year, and
-that is why you are standing here instead of in there, and that is the only
-reason the 30th does not have room for you as well.
-
-And then you take him home and introduce them, and she remembers him too,
-because that is the single thing this house can do.
-
-Two leap-day children on the 29th.
-
-The knock still comes every four years at midnight. But it is just a knock now,
-and it is coming from the other side, and there is somebody in that house who
-knows where the cupboard is.
-
-Last line of the game — he asks what day it is, you tell him the truth:
-
-> *"The twenty-ninth."*
->
-> *"No it isn't,"* he says, delighted. *"It's both."*
-
-**Cost:** responsibility, permanently, for a thing that is not yours. And the
-game never tells you it was the right answer.
+**He never learns what the wish cost. You never have to tell him.**
 
 ---
 
-## 8. Why this is horror and not fantasy
+## 8. The morning
 
-There is no magic in it. That is the point.
+You wake up in your own bed. It is the 29th. Your mother is in the kitchen,
+calling you down, because it is your birthday and she remembered.
 
-- **The threat is being forgotten into a crowd.** That is the oldest thing an
-  eleven-year-old is actually afraid of, and it is completely literal here.
-- **There is no combat, no monster, no damage.** The only fail states are being
-  noticed, being wrong about a child, and three endings.
-- **It happens at midnight, all in one night.** The whole game is the four seconds
-  after midnight. Every act is the same night, one step further from your
-  bedroom. Your mother is one floor away the entire time and never knows.
-- **Every disturbing image is something real and slightly wrong.** A coat with a
-  misspelled name. A party with no children in it. A calendar printed in red. No
-  gore, no dismemberment, no realistic faces.
-- **The setting is domestic.** It is a bedroom, a hallway, a school cloakroom, a
-  waiting room. The game never takes you somewhere scary. It takes you somewhere
-  *familiar* and quietly changes one thing.
+The party from last night has not been cleaned up. There are **two hats on the
+table.** There are two plates.
 
----
+She does not know why. She made two of everything because she made two of
+everything, and she will not remember doing it, and by next week there will be
+one hat again and she will not know that either.
 
-## 9. Thematic statement
+**You remember. That is the whole ending. He is gone, and something is left
+behind, and you are the only person who knows it was a person.**
 
-**A birthday is a promise that somebody will show up.**
-
-The game is about the child nobody showed up for, and it refuses to resolve that
-into a monster story, because the mechanism is *ordinary*: a system that is
-slightly too small, forgetting things that do not fit, and a pile of everyone it
-forgot.
-
-The three endings are three answers to "whose birthday is it?"
-
-- **A** — mine is more real than yours.
-- **B** — nobody's, if the problem is removed.
-- **C** — *ours*, and I will do the remembering.
+Every fourth year, at midnight, there is one knock. Just one. It is never
+explained and you never open it and you never stop listening for it.
 
 ---
 
-## 10. Open questions
+## 9. Why this is *sad horror*
 
-1. **Is the mother too passive?** She is the emotional engine and never gets a
-   cutscene. If the game needs her to act, she needs an Act IV scene.
-2. **Does ending C undercut the horror?** It is the cheapest emotional
-   resolution available. It is gated behind finding all four objects, but I am
-   not sure that is enough — it may need one more scene.
-3. **The 27th detail.** Your mother getting the date wrong for years is a small
-   detail doing a lot of work. Confirm it reads as sad rather than sloppy.
+**Sad:** every monster is a disappointed child. The threat you fight is being
+forgotten, and the thing you save is a boy who asked for one good night. The
+monsters can only be *helped*, and helping them costs you a piece of your own
+birthday.
+
+**Horror:** four hundred faceless children having a birthday simultaneously in a
+room with no room in it. Adults going through motions at a party that is not
+happening. One passenger too many in every car on a road that goes nowhere. A
+coat on a rack that fits.
+
+And the real horror is structural: **you spend the whole game walking beside
+someone toward the thing they want most, and you know it will kill them, and you
+will do it anyway** — because they asked nicely, and because you are eleven, and
+because that is what a birthday is.
+
+There is no combat. There is no death state. There is no jump scare in this game
+that is not a grieving child.
+
+---
+
+## 10. The three-shape ending
+
+There is no longer a choice between three endings. There is **one ending**, and
+three decisions inside it:
+
+| Decision | Effect |
+| --- | --- |
+| Did you spend your 29th? | If no, the party is smaller and dimmer, and he still has a good night. If yes, it is the best night he will ever have. |
+| How many Unacknowledged did you help? | Determines what you keep. Help them all and you cannot remember your own birthday by the end — you have given the memories away. |
+| Did you tell him the truth in Act IV? | Determines the last four lines of the game. He is not more scared if you tell him. He is **grateful.** |
+
+The last decision is the one that matters, and it is the easiest to get wrong,
+and the game never tells you that it was the right one.
+
+---
+
+## 11. Open questions
+
+1. **Should the Boy be savable at all?** Currently: no. There is no ending where
+   he lives. If the player will want to reload-save after Act V, that needs an
+   option — or an explicit, honest warning.
+2. **Does he die too fast?** The scene above is deliberately undramatic. It may
+   need three more minutes of the party before the turn.
+3. **Is the "help the ghosts and lose your own memories" mechanic too punishing?**
+   It is the only resource in the game, and it never runs out — which means
+   there is no correct number to hit.

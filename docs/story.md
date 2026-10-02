@@ -1,8 +1,9 @@
-# Story Bible
+# Story Bible (v3)
 
-> See **[`plot.md`](plot.md)** for the full plot, beat by beat, and the three
-> endings. This document is the reference material behind it: canon rules, cast
-> sheets, tone rules, and the continuity bible.
+> The full plot is in [`plot.md`](plot.md). This is the reference material behind
+> it: canon rules, cast sheets, tone rules, continuity.
+>
+> **Register: sad horror.** Every monster is a disappointed child.
 
 ---
 
@@ -10,19 +11,21 @@
 
 | # | Fact | Why it matters |
 | --- | --- | --- |
-| 1 | The protagonist is eleven. **The game never states his name on screen.** | Naming him makes him a character. Not naming him makes him the player. |
-| 2 | Tonight is **February 29th**. It is a leap year. | Everything derives from this. If the 29th is just a date, the 30th is arbitrary. |
-| 3 | February 30th is the **discard day** — the extra day the calendar cannot keep, which it throws away. | The cosmology. See `plot.md` §2. |
-| 4 | A day can only be discarded if it is **empty**. The 30th never is. | This is the whole plot, not just the setup. |
-| 5 | The 30th holds every **unacknowledged leap-year birthday** in it simultaneously. | It is a landfill *and* it is crowded. Both are true. |
-| 6 | The Boy is an **aggregate** — the 30th compressing a crowd into one child because there was no room for four thousand children. | Retrospectively redefines every other child with your face. |
-| 7 | The Boy wears the protagonist's face because he is the **most recent thing nearly discarded**. | Not a twin. Not a replacement. The last item in the bin. |
-| 8 | The mother is the **only person alive who remembered** the protagonist's birthday, and she gets it wrong most years. | She is why the story happens at all. |
-| 9 | The protagonist was **nearly in the 30th** four years ago when his mother celebrated on the 27th. | He is the item that almost went in. |
-| 10 | The game takes place in the **four seconds after midnight**. Every act is the same night. | Her mother is one floor away for the entire game and never knows. |
-| 11 | The **offer is not a trade of lives.** It is: let one real February day stop existing so the 30th can be a real day. | It is a paperwork decision, not a murder. That is why it is hard. |
-| 12 | There is **no combat, no monster, no death state** anywhere in the game. | Fail states are retries. |
-| 13 | Refusing is **always allowed** and never punished by the game. | Ending B is a legitimate choice, not a failure. |
+| 1 | The protagonist is eleven and the game **never states his name**. | Naming him makes him a character. Not naming him makes him the player. |
+| 2 | Tonight is **February 29th**, a leap year. | Everything derives from this. |
+| 3 | February 30th is the **discard day** — the extra day the calendar cannot keep, so it throws it away. | The cosmology. |
+| 4 | A day can only be discarded if it is **empty**. The 30th never is. | The whole plot, not just the setup. |
+| 5 | The 30th holds every **unacknowledged leap-year birthday** at once, with no room. | It is a landfill *and* it is crowded. |
+| 6 | The Boy is an **aggregate** — the 30th compressing a crowd into one child. | Retrospectively redefines every other child with your face. |
+| 7 | The Boy wears the protagonist's face because he is the **most recent thing nearly discarded** — celebrated on the 27th when he was seven. | He is in the pile. |
+| 8 | **The Boy travels with the player through all five acts.** | The companion is the game. |
+| 9 | The Boy's wish is one sentence: **"I want a party."** | It is small on purpose. |
+| 10 | **The protagonist learns in Act IV that granting the wish will kill the Boy.** | The player knows; the Boy does not. That asymmetry is the game. |
+| 11 | He never finds out. **The player never has to tell him.** | The single hardest beat in the script. |
+| 12 | The mother is the only person who ever remembered the protagonist's birthday. | She is why the 29th exists as a day to spend. |
+| 13 | **There is no combat and nothing can be killed.** Ghosts can only be helped or avoided. | Compassion is the only verb. |
+| 14 | Helping a ghost costs the player **a piece of their own birthday memory.** | The only resource in the game. |
+| 15 | **There is no good ending.** The Boy dies in all three. | This is a sad horror game, not a redemption game. |
 
 ---
 
@@ -30,147 +33,147 @@
 
 ### The Protagonist
 
-**Age:** eleven. **Name:** never spoken in a title card.
+**Age:** eleven. **Name:** never spoken in a title card. Nine times in the whole
+game someone says it and the player is never sure it is the same name.
 
-He is not brave. He is **polite** — that is his defining trait and it is the
-source of most of the game's tension, because he keeps trying to make a
-frightening situation *comfortable for someone else*. He opens the cupboard for
-the Boy because it is rude not to. He stays polite through the entire game and it
-is the reason he ends up where he ends up.
+He is not brave. He is **polite**, and that is his defining trait and the source
+of almost all the tension, because he keeps trying to make frightening
+situations comfortable for other people. He opens the cupboard because it is rude
+not to. He apologises to things that are not alive.
 
-He calls everyone "sir." He says sorry to things that are not alive.
-
-**Do not** make him a hero. He does not fight, does not solve, does not save
-anyone. He is a child who was very nearly forgotten, having one long night.
+**He cannot fight, cannot solve, and cannot save the Boy.** He can only walk
+beside him and be kind and, at the end, answer a question honestly.
 
 ### The Boy
 
 **Apparent age:** eleven. **Actually:** everyone in the discard day, compressed.
+**Role:** the companion. He is in every act, at the player's shoulder.
 
-He wears the protagonist's face and he is *pleased* to see him. Never threatens.
-Never raises his voice. Never lies. Calls the protagonist by name correctly,
-always, and we never learn when he learned it.
+He is **not lying, never cruel, and never raises his voice.** He is *pleased* to
+have someone. He talks constantly, because he has never had a listener.
 
-**Performance rules — these are the two that matter:**
+**Performance rules — the two that matter:**
 
-1. **He is never more than three steps from the camera.** He is not menacing. He
-   is *near*.
-2. **He is never alone for longer than forty seconds.** The audience should never
-   be able to be sure he has left.
+1. **Never more than three steps from the camera.** He is not menacing. He is
+   *near*.
+2. **Never alone for longer than forty seconds.** The player must never be
+   certain he has left the room.
 
-He is not a villain. He is a child at a party that has no room for him, being
-extremely reasonable about it, which is worse.
+He asks for one good night and does not know it costs him everything. He is not
+tragic on purpose — that is what makes it tragic.
 
-**Dialogue note:** he uses *our* words. He says "not down here" the way a child
-paraphrases something adult and slightly wrong. He is not eloquent. He is small.
+**Voice:** he uses *our* words, slightly wrong. He says "not down here" the way a
+child paraphrases something adult. He is not eloquent. He is small.
 
-### The Mother
+### Your mother
 
-**Never named on screen. Never given a cutscene. Present in the whole game.**
+**Never named on screen. Never given a cutscene. Three appearances, total.**
 
-She is the reason the party happened. She gets leap-day birthdays wrong most
-years — the 27th once, the 1st once, "the last Friday of February" once — and
-this year she got it right, and there is a cake on the table with eleven candles
-and the correct number on it.
+She is the reason tonight is happening. She has got leap-day birthdays wrong for
+years — the 27th, then the 1st, then "the last Friday of February" — and this
+year she finally got it right, and there is a cake with eleven candles on it.
 
-She appears exactly three times:
-
-| When | Where | What she does |
+| Act | Where | What she does |
 | --- | --- | --- |
-| Act I | A garden, among the Guests, **motionless, facing the street** | Nothing. She is one of them. The player may not notice. |
-| Act II | Driving a car | *"We'll be there soon."* Does not look at him. |
-| Act IV | At the kitchen table with the Boy | Both say *happy birthday* to someone not in the room. |
+| I | A garden, among the motionless Guests, facing the street | Nothing. Players routinely miss her. |
+| II | Driving a car | *"We'll be there soon."* Does not look at you. |
+| IV | Your kitchen table, with the Boy | Both say *happy birthday* to nobody in the room. |
 
-That is her entire screen time and it is enough. **Adding a fourth appearance is
-the single easiest way to ruin this game.**
+She is one floor away for the entire game and she never knows. **The player
+never rescues her.** Adding a fourth appearance is the easiest possible way to
+ruin this game.
 
-### The Party Guests (Act I)
+### The Unacknowledged — *the monsters*
 
-Thirty to two hundred adult figures, motionless, standing in gardens and on
-pavements, all facing the street. They are the parents from every party that
-ended badly.
+The main ghosts. **Specific** forgotten children, where the Boy is the
+aggregate. Furious, because the Boy is getting a wish and they are not.
 
-They never move, never turn, never pursue. They **notice**, and that is all.
+They flicker: solid in peripheral vision, gone when you look straight at them.
 
-**Read:** they are not hunting you. It should be genuinely ambiguous whether
+**They ask: *"Is this my birthday?"***
+
+- **"Yes."** They accept it. They go quiet and they are gone.
+- **"No"**, silence, or running — they take it from you. You lose a memory of
+  your own birthday.
+
+**Nothing in this game can be killed.** Every threat is answered with kindness
+or avoided. Helping costs something. There are never enough of you to go around,
+and the game never tells you that ignoring them all would have been fine.
+
+### The Late — *Act III*
+
+Children who will not leave a waiting room. They do not chase and they do not
+threaten. They **wait**, patiently, and the longer you look the less like
+children they are.
+
+The way past is to go to each one and say the thing nobody ever said to them.
+It takes a very long time. It is worth it.
+
+### The Almost — *Act IV*
+
+Adults, translucent, going through the motions of a party that is not happening.
+
+They are not a threat. They are the people who almost came. They are the
+saddest thing in this game.
+
+### The Guests — *Act I*
+
+Motionless adults in gardens and on pavements, all facing the street. The
+parents from every party that ended badly. They never move, never turn, never
+pursue.
+
+**They notice you, and that is all.** It should stay genuinely ambiguous whether
 being noticed is dangerous or merely *known*.
-
-### The Parties of the Road (Act II)
-
-Cars that never arrive. All of them full. Windows fogged from the inside.
-Everyone facing forward. **One passenger too many in the back seat, in every
-car, always.** No light, no movement, no explanation.
-
-It is never explained. Do not explain it. It is in every car because it is in
-every car.
-
-### The Waiting Children (Act III)
-
-Twelve children with the protagonist's face, all waiting to be collected by an
-adult who is not coming.
-
-Exactly one is the Boy. The other eleven are **fragments of him** — the
-cancelled parties, the four-year promises, the late collections.
-
-Verification items: a photograph (Act I), a bracelet and a birthday hat (Act II),
-a scar (Act III-a). Each child is checked against one item.
-
-Wrong answer = a scream, a reset, and no explanation of what happened.
-
-### The Adults of the After (Act IV)
-
-Six objects, six different children, six different ordinary nights where six
-different adults each forgot a different child's birthday.
-
-**No mastermind. No tragedy. No villain.** Six separate small failures. That is
-the horror.
 
 ---
 
 ## Tone rules
 
-For every writer, artist, and level designer on the project.
-
 1. **The game never jumpscares without a fair tell.** Sound or visual, ≥ 700 ms
    of warning. Frightening, not cheap.
-2. **The Boy is never a monster.** No attack, no chase, no gore, no death. He is
-   the most helpful character in the game.
-3. **The horror is accuracy.** Every disturbing image is something real and
-   slightly wrong. **No blood, no dismemberment, no realistic human faces, no
-   body horror of any kind.** The register is analog horror and PS1-era found
-   footage.
-4. **The mundane is the weapon.** The scariest thing in this game is a coat on a
-   rack that fits. Keep the settings domestic. Bedroom, hallway, cloakroom,
-   waiting room.
-5. **Never tell the player they were dreaming.** No twist that invalidates the
-   previous four acts.
-6. **Never explain the passenger in the back seat.**
-7. **The mother is never rescued by the player.** She is one floor away for the
-   whole game and she stays there. This is deliberate and non-negotiable.
+2. **Every monster is a disappointed child.** No creatures, no adults-monsters,
+   no gore, no body horror of any kind. If it is not a child who was let down, it
+   is not in the game.
+3. **Nothing can be killed.** No weapon exists in this game. There is no combat
+   verb and there will never be one.
+4. **The Boy is never a monster and never frightened.** He is the most helpful
+   character in the game and the most well-mannered. His death must not be
+   played as a monster death — no reaching, no screaming, no agony.
+5. **The horror is accuracy.** Every disturbing image is something real and
+   slightly wrong. The mundane is the weapon — a coat that fits, a cake with no
+   candles, a car with one passenger too many.
+6. **The settings stay domestic.** Bedroom, hallway, cloakroom, waiting room,
+   kitchen. The game never takes you somewhere scary; it takes you somewhere
+   familiar and quietly changes one thing.
+7. **Never tell the player they were dreaming.** No twist that invalidates the
+   previous acts.
+8. **Never explain the extra passenger.**
+9. **The mother is never rescued.** She stays one floor away for the whole game.
+10. **The player must be allowed to say the truth to the Boy in Act IV.** Hiding
+    it must be a choice with consequences, never a locked option.
 
 ---
 
 ## Continuity bible
 
-Things that will otherwise drift between acts:
-
 | Item | Established | Note |
 | --- | --- | --- |
-| Missing tooth | front right, lost in January | Both the protagonist and the Boy have it. It is how the player confirms him. |
+| Missing tooth | front right, lost in January | How you confirm him in Act III. |
 | Cowlick | left side, won't sit flat | Same. |
-| Pyjamas | the protagonist fell asleep in his clothes | He is still wearing them in Act I. The Boy's clothes are the *wrong version*. |
-| The candle | Act I party favour, **still lit** | The Boy is not carrying it. It is still burning somewhere in the 30th, four hours in. |
-| The photograph | Act I — the Boy is in it with another boy who has the protagonist's face | Never explained. Never resolved. |
-| The coat | Act III, name tag, one letter wrong | Wearing it is always optional and the game never asks. |
-| Date on the HUD | reads `29` in Acts I–IV | In Act V it reads `30` for the first and only time. |
-| The music box motif | every act, 1 semitone flat, −2% tempo per loop | By Act V the player hears it before they see anything. |
+| Pyjamas | the protagonist fell asleep in his clothes | The Boy's clothes are the *wrong version*. |
+| The candle | Act I favour, **still lit** | Still burning in Act V. Four hours of it. |
+| The photograph | Act I — the Boy is in it with another boy who has your face | Never explained. Never resolved. |
+| The coat | Act III, name tag, **one letter wrong** | The cake in Act V is misspelled with **the same letter**. That is the payoff. |
+| Date on the HUD | `29` for Acts I–IV | Reads `30` only in Act V. |
+| The music box motif | every act, 1 semitone flat, −2% tempo per loop | **Stops when he dies.** First silence in the game. |
+| Two hats, two plates | the morning after | She made two of everything and will not remember why. |
 | Save file | `feb_29.bak` | Never acknowledged in the UI. |
 
 ---
 
-## Related documents
+## Related
 
-- [`plot.md`](plot.md) — the full plot and endings
+- [`plot.md`](plot.md) — the plot and the death
 - [`worlds.md`](worlds.md) — act layouts and mechanics
 - [`art-direction.md`](art-direction.md) — how the models get made
 - [`tech-stack.md`](tech-stack.md) — engine and budgets
