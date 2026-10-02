@@ -31,7 +31,8 @@ Full narrative: [`docs/story.md`](docs/story.md)
 
 | Doc | What it covers |
 | --- | --- |
-| [`docs/story.md`](docs/story.md) | Canon, lore, the cast, the three endings, tone rules |
+| [`docs/plot.md`](docs/plot.md) | **The plot.** Why February 30th exists, the Boy, the mother, beat by beat, all three endings |
+| [`docs/story.md`](docs/story.md) | Canon rules, cast sheets, continuity bible, tone rules |
 | [`docs/worlds.md`](docs/worlds.md) | All five acts — layouts, mechanics, scares, exits |
 | [`docs/art-direction.md`](docs/art-direction.md) | **How the models actually get made.** The pipeline, the budgets, the tricks |
 | [`docs/tech-stack.md`](docs/tech-stack.md) | Engine choice, perf budgets, platforms |

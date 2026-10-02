@@ -97,11 +97,28 @@ Collect **three party favours** and give them to the Boy in the house:
 2. A candle, still lit, in a puddle of melted wax
 3. A balloon, deflating *upward*
 
-### The scare
+**Also present, do not miss:** in one of the gardens, among the motionless
+Guests, a woman in a cardigan who is **not facing the street**. She never moves.
+She never gets a name tag and the game never points at her. Most players miss
+her entirely on Act I and recognise her in Act IV. That is intended.
 
-On taking the third favour, the game holds a frame for 600 ms. Cut to a wide
-angle of the street. **Every Guest has turned to face the other way.** No
-animation. They simply now face elsewhere. The music box motif drops 3 semitones.
+### Dialogue — the only rule that matters
+
+The Boy walks you to his house and explains the Guests, and he explains them
+kindly, because he is eleven and he is being helpful:
+
+> *"They don't chase you. There's no chase. They just notice you."*
+>
+> *"If they notice you, you go back. That's all it does."*
+
+Then, when you hand over the third favour, the street goes quiet and every Guest
+has turned to face the other way — and he gives you a **photograph** he took out
+of the house. In it he is standing next to a boy with your face who is not you.
+
+He does not explain the photograph.
+
+> **Act I ends with the first hard question:** he is not alone, and neither
+> are you.
 
 ### Exit
 
@@ -172,12 +189,17 @@ She does not look at you. She says *"we'll be there soon."* The radio plays
 tomorrow's news, **backwards** — and one word comes through clearly, forward:
 your name.
 
+> **Act II's real job:** the 30th has *her* in it. It knows your family. This is
+> not somewhere you stumbled into — it is somewhere that was already expecting
+> you. It also plants the two verification items for Act III (the bracelet and
+> the birthday hat), which are found here.
+
 ### Exit
 An interchange ramp that folds back on itself and lands in a school car park.
 
 ### Teaches
 the world can repeat · time pressure from something harmless · the Boy is
-watching, not chasing
+watching, not chasing · **this place knows you**
 
 ---
 
@@ -237,12 +259,23 @@ correctly except for **one letter**. The Boy wants you to wear it. It fits.
 
 Wearing it is optional. The game never asks you to.
 
+**Then the second hard thing.** Having found the real Boy among the fragments,
+he says the line the whole act has been building toward, and he says it plainly,
+the way a child explains a fact about the weather:
+
+> *"There isn't room for me in here."*
+>
+> *"There hasn't been for a long time."*
+
+He does not elaborate. He goes back to looking for his coat. The player is left
+to work out what that means before Act IV explains it.
+
 ### Exit
 The Lost and Found bin at the back of the hall. It is the size of a bedroom.
 
 ### Teaches
 look carefully at detail · the game rewards attention and punishes speed ·
-the Boy is a collection, not a person
+**the Boy is a collection, not a person** · and the thing he wants is *space*
 
 ---
 
@@ -273,12 +306,22 @@ what the wrong version of the day looks like, which are all worse.
 ### The reveal
 
 Solve it correctly and the answer is: **it is not one child's day.** Every item
-belongs to a different child, and none of them know each other. The Boy is not
-a person with a history. He is a **pile of other people's kids**, assembled by a
-calendar that could only think of one shape to pour them into.
+belongs to a different person, and none of them know each other. There is no
+mastermind and no tragedy — just six small separate failures, on six ordinary
+nights, in six different years, where six different adults each forgot a
+different child's birthday.
+
+The Boy is not a person with a history. He is a **pile of other people's
+forgotten children**, assembled by a filing system that could only think of one
+shape to pour them into.
 
 The game does not dramatise this. It puts the six items in a row on a table and
 lets the player see the sizes do not match.
+
+And here is the part that reframes the protagonist: **four years ago he was one
+of those six.** His mother celebrated on the 27th, because she genuinely believed
+that was right. He is in this pile. He is the reason he has a face to be
+recognised by.
 
 ### The scare
 
@@ -318,8 +361,22 @@ you. There are four hundred children in it.
 
 ### The conversation
 
-The Boy explains himself completely and makes the offer (see `story.md` §4). He
-is calm, reasonable, and eleven years old.
+The Boy explains himself completely and makes the offer (see [`plot.md`](plot.md)
+§6). He is calm, reasonable, and eleven years old.
+
+**The offer is not "trade yourself."** It is a filing decision, and it is stated
+as one:
+
+> *"There isn't room for me on the thirtieth. There's only ever been room for
+> about one."*
+>
+> *"I could have a birthday if there was a day. There isn't one. But if there
+> were a day, I would have had one."*
+>
+> *"You'd only have to let go of a real one."*
+
+To give February 30th a day to exist, **one real February day has to stop
+existing** — and the only one available is the 29th.
 
 The player can respond. The dialogue is short and the branches converge — the
 player is choosing *how* to hear him, not *what* he says. Four lines, three
@@ -328,14 +385,19 @@ endings, one prompt.
 ### Lifelines
 
 How many of the four objects the player carries changes the length and warmth of
-the conversation, and unlocks the fourth ending line. It never changes the
-choice.
+the conversation, and unlocks the true ending. It never changes the choice.
 
 ### Endings
 
-**A — Wear the coat.** You take his place. The cycle continues.
-**B — Blow out the candles.** You erase the 30th, and your own 29th with it.
-**C — Stay.** You take his hand and both of you go home.
+**A — "It's my birthday too."** You give him the 29th. He gets a birthday that
+lasts. You become one more unacknowledged day in an overcrowded day.
+
+**B — "Blow out the candles."** The 30th is deleted, and the calendar becomes
+perfect — which means nothing can ever be discarded again, including the things
+that should be.
+
+**C — "What day is it?"** You tell him your mother remembered you, and you take
+him home. Two leap-day children on the 29th.
 
 ### Final image
 
