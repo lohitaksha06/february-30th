@@ -47,6 +47,14 @@ Full plot: [`docs/plot.md`](docs/plot.md)
 | [`docs/pipeline.md`](docs/pipeline.md) | Reproducible asset build — `game/assets` is generated, not committed |
 | [`docs/project-structure.md`](docs/project-structure.md) | Full folder layout and module boundaries |
 
+## Register
+
+**Sad horror, with something chasing you.** Every monster in this game is a
+disappointed child. Nothing can be killed — the only verbs are **run, hide, and
+be kind**, and being kind is the most expensive one.
+
+---
+
 ## Status
 
 Pre-production. **No game code has been written yet** — this repo currently holds

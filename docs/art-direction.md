@@ -57,7 +57,8 @@ the `.blend` and the `.glb` are build artefacts. See `pipeline.md`.
 
 | Class | Triangle budget | Vertices |
 | --- | --- | --- |
-| Child / the Boy | **≤ 800** | ≤ 450 |
+| Child / your companion | **≤ 800** | ≤ 450 |
+| **Ghoul** | **≤ 800** (same rig!) | ≤ 450 |
 | Adult (Party Guest) | **≤ 400** | ≤ 250 |
 | Hero prop (cupboard, cake, car) | **≤ 600** | ≤ 350 |
 | Common prop (chair, mug, coat) | **≤ 120** | ≤ 80 |
@@ -124,6 +125,47 @@ def apply_wrongness(rig, seed):
 
 Seeded, so a given character is *always* wrong in exactly the same way. A crowd
 of 200 has 200 distinct, consistent silhouettes from one mesh.
+
+### 4.1b The ghoul — the same trick, turned up
+
+**A ghoul is §4.1 with the amplitude dialled past the point of charm.**
+
+| | Error range | Reads as |
+| --- | --- | --- |
+| The companion, the guests, the children | **3–8%** | uncanny, *almost* right — this is what makes it creepy |
+| **The ghouls** | **20–30%** | damaged — the same error, past the point where it reads as a modelling quirk |
+
+One shader, one code path, one parameter:
+
+```python
+# art-source/blender/src/wrongness.py
+def apply_wrongness(rig, seed, amplitude=1.0):
+    """amplitude 1.0 = a child.  amplitude 3.5 = a ghoul."""
+    rng = random.Random(seed)
+    for bone, delta in WRONGS.items():
+        if rng.random() < 0.65:
+            f = 1.0 + delta * amplitude * rng.uniform(0.7, 1.3)
+            rig.bones[bone].scale *= f
+
+apply_wrongness(child_rig, seed=1,              amplitude=1.0)   # he looks fine
+apply_wrongness(child_rig, seed=ghoul_seed,     amplitude=3.5)   # it does not
+```
+
+Because it is the *same* rig, **the player cannot tell a ghoul from your companion
+by shape alone** — and that is exactly the feeling we want in Act III, where you
+are hunting through a hall of children with your face for the one that is yours.
+
+Additional ghoul-only passes, all free:
+
+- **Head scaled 1.4×** independently of the body
+- **Joint reversal** on one arm — the elbow bends outward
+- **A face texture squeezed vertically**, 60% height, so the features smear
+- **No eyes.** Not black sockets — the texture simply has no eye drawn on it, and
+  the face is worse for it than anything you could draw
+- **One arm much longer than the other**, so it drags
+
+**Budget: 800 triangles — the same as a child.** A ghoul costs exactly one extra
+face texture (16 KB) and nothing else.
 
 ### 4.2 Vertex snapping (PS1 jitter) — 8 lines of shader
 
@@ -197,6 +239,15 @@ solution:
 
 > **One base child mesh. One skeleton. Everything else is a parameter.**
 
+This covers three separate populations that all need to look like *you*:
+
+| Population | Count | How |
+| --- | --- | --- |
+| **Your companion** | 1 | base mesh, amplitude 1.0 |
+| **Waiting Children** (Act III) | 12 | face swap, mirror, seed |
+| **The 30th's children** (Act V) | 400 | face swap, mirror, seed |
+| **Ghouls** (all acts) | 8–20 | **same mesh**, amplitude 3.5 (§4.1b) |
+
 | Vary by | Method | Cost |
 | --- | --- | --- |
 | Face | swap 1 of 6 face textures (64×64) | 16 KB |
@@ -204,6 +255,14 @@ solution:
 | Height / limbs | seeded bone scale, §4.1 | **0 bytes** |
 | Clothing | material colour parameter + 2 overlay meshes | ~0 bytes |
 | Name tag | texture tint | 0 bytes |
+| **Ghoul distortion** | same bone scale, ×3.5 amplitude | **0 bytes** |
+
+**Ghouls are the payoff of this entire architecture.** Because a ghoul is the
+same 800-triangle mesh with the error turned up (§4.1b), they cost one extra
+texture and nothing else — and, critically, the player *cannot tell a ghoul from
+your companion by shape*. In Act III, when you are hunting a hall of children
+with your face for the one that is yours, every silhouette is a candidate. That
+tension is free.
 
 **Per additional child: zero geometry, 16 KB of texture, one draw call.**
 
@@ -298,6 +357,13 @@ So the asset budget is deliberately skewed away from geometry, and
   the geometry combined. It costs about 40 KB.
 - **The knock.** Filtered noise burst into a 1.5 s hallway convolution tail,
   pitched down 12 semitones. Generated in Python, not sampled.
+- **The bad cheer — the ghoul sound, and the most important cue in the game.**
+  Not a roar. A *party* noise played slightly wrong: recorded as a short crowd of
+  children cheering and clapping, then degraded so it is **out of time with
+  itself**. It starts as one voice, doubles to four, then six.
+  It has to be recognisably *people enjoying themselves*, because that is the
+  horror — you are being hunted by a sound that is nearly a birthday party.
+  Two voices that are one voice is where the fear lives.
 - **Static voices.** A pitched noise source ring-modulated by a 40 Hz LFO, then
   granular-stuttered. Sounds exactly like corrupted speech. **No text-to-speech
   is used anywhere in this game.**
