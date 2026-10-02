@@ -70,7 +70,90 @@ written to compile on both.
 
 ---
 
-## 4. Performance strategy
+## 4. "I don't want it to be heavy"
+
+This is the requirement that decides the whole project, so it gets its own
+section. **Five different things get called "heavy," and each has its own
+answer.**
+
+### 4.1 Download size
+
+| | |
+| --- | --- |
+| Target | **< 50 MB** zipped |
+| Hard cap | 80 MB |
+| Why | 800-tri character · 16-colour 128px textures · 320×180 internal render · synthesised OGG audio |
+
+A Unity game with the same art direction would be 200–400 MB, with no way to
+reduce it. Godot gives us 50 MB and zero runtime.
+
+### 4.2 Runtime performance
+
+The full budget is in `art-direction.md` §6. The headline:
+
+- **320×180 internal resolution, upscaled nearest** — ~5% of the fragments of a
+  native 1080p build. This one line does more for performance than everything
+  else combined.
+- **Zero shadow maps.** Blob shadows from a single 128×128 alpha texture.
+- **One instanced mesh** for a crowd of 200.
+- **One hemisphere light + the flashlight.** Indoors, no directional light at all.
+- **30 fps locked** — which is also the art direction.
+- **No PBR, no normal maps, albedo only.**
+- Draw calls < 250, triangles on screen < 50,000.
+
+**Target hardware: GTX 1050 / Intel Iris Xe (2017 integrated)** — deliberately
+below this machine's RTX 3050. Designing under the developer's own GPU is what
+makes "smooth for users" true rather than aspirational.
+
+The test: if it holds 60 fps at 1080p on a 2017 iGPU, it runs everywhere —
+including on a phone.
+
+### 4.3 Build time and iteration speed
+
+**< 50 MB** means the whole game rebuilds and uploads in under a minute. This is
+a design constraint, not a vanity number — a slow build makes you iterate slowly,
+and iterating slowly is how projects die.
+
+Assets are generated from Python (`pipeline.md`), so CI rebuilds the entire art
+library from source and nothing is ever hand-committed.
+
+### 4.4 The engine itself
+
+Godot is ~100 MB installed and exports to **~50 MB with no runtime dependency.**
+The player downloads one folder and double-clicks it. No engine install, no
+launcher, no account, no sign-up.
+
+This is a distribution decision as much as a technical one — see
+[`distribution.md`](distribution.md).
+
+### 4.5 The player's attention
+
+The lightest thing in a horror game is **silence**, and it is the most effective
+tool available. Four seconds of nothing in the prologue is worth more than any
+model, and it costs nothing.
+
+The fear budget is **70% audio, 20% camera and editing, 10% models** — so the
+expensive work is writing and recording rather than triangulating, and the scene
+budget stays small.
+
+---
+
+## 5. Why the house is small
+
+The prologue is a **small house: four rooms, one floor.** Story choice *and*
+performance strategy:
+
+- Every room within thirty seconds' walk of every other room
+- The player learns the whole layout in the first minute
+- **The last safe place is small**, which is why losing it hurts
+- Transitions are near-instant
+- Four rooms is roughly **2,000 triangles** of level shell
+
+A large explorable house would be ~40,000 triangles and a worse story.
+
+---
+
+## 6. Performance strategy
 
 The order of operations matters — each layer is cheaper than the one above it.
 
@@ -92,7 +175,7 @@ are part of the art direction. See `art-direction.md` §4.5.
 
 ---
 
-## 5. What I can and cannot verify in this environment
+## 7. What I can and cannot verify in this environment
 
 Being straight about this, because it changes how the work should be sequenced.
 
@@ -121,7 +204,7 @@ nobody has looked at yet. It is ~200 lines and it de-risks the entire project.
 
 ---
 
-## 6. Platform targets
+## 8. Platform targets
 
 **Day one:**
 
@@ -137,7 +220,7 @@ engine decision at that point, honestly).
 
 ---
 
-## 7. Save system and progression
+## 9. Save system and progression
 
 - Godot's `user://` with **JSON**, not binary — a save file a human can read and
   a player can find
@@ -149,7 +232,7 @@ engine decision at that point, honestly).
 
 ---
 
-## 8. Testing
+## 10. Testing
 
 | Layer | Tool |
 | --- | --- |
@@ -161,7 +244,7 @@ engine decision at that point, honestly).
 
 ---
 
-## 9. The repository is the build system
+## 11. The repository is the build system
 
 `game/assets/models`, `game/assets/textures`, and `game/assets/audio` are
 **build outputs and are git-ignored.** The source is the Python in `art-source/`.
@@ -182,7 +265,7 @@ Full detail in [`pipeline.md`](pipeline.md).
 
 ---
 
-## 10. Open questions
+## 12. Open questions
 
 1. **Godot 4.4 vs waiting for 4.5/5.x.** 4.4 is stable and proven; the
    renderer changes in 4.5 are tempting but risky. Recommend 4.4 and move only

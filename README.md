@@ -7,59 +7,74 @@ is. Your mother has never got it right before. This year she finally did.
 
 At 00:00 you wake to knocking from your bedroom cupboard.
 
-There is a boy in there. He has your face, your hair, the tooth you lost in
-January. He is wearing clothes that are almost yours, but wrong: a party hat two
+There is a child in there. They have your face, your hair, the tooth you lost in
+January. They are wearing clothes that are almost yours, but wrong: a party hat two
 sizes too small, a shirt buttoned inside-out, a jacket with the sleeves cut at
 two different lengths.
 
-He says tonight is his birthday. He says it is the **30th**.
+They say tonight is their birthday. They say it is the **30th**.
 
 There is no 30th of February. There is no 30th of anything.
 
-When you open the door to comfort him, the door is the size of a room. He comes
-with you. And he tells you the whole of what he wants:
+Your mother unlocks the door downstairs. You have about four seconds, and the only
+option available to you is to push them further in to hide them.
 
-> *"I want a party."*
->
-> *"That's it. That's the whole of it."*
-
-You have four hours to give it to him.
+You fall in together.
 
 ---
 
 ## The pitch in one line
 
-> **You spend the whole game walking beside someone toward the thing they want
-> most. You know it will kill them. You will do it anyway, because they asked
-> nicely, and because you are eleven, and because that is what a birthday is.**
+> **You spend the whole game walking toward someone you have just lost, knowing
+> the only thing you can give them will kill them. You rescue them anyway. They
+> die. You go home.**
 
-Full plot: [`docs/plot.md`](docs/plot.md)
+---
 
-## Contents
-
-| Doc | What it covers |
-| --- | --- |
-| [`docs/plot.md`](docs/plot.md) | **The plot.** Why February 30th exists, the Boy, the mother, beat by beat, all three endings |
-| [`docs/story.md`](docs/story.md) | Canon rules, cast sheets, continuity bible, tone rules |
-| [`docs/worlds.md`](docs/worlds.md) | All five acts — layouts, mechanics, scares, exits |
-| [`docs/art-direction.md`](docs/art-direction.md) | **How the models actually get made.** The pipeline, the budgets, the tricks |
-| [`docs/tech-stack.md`](docs/tech-stack.md) | Engine choice, perf budgets, platforms |
-| [`docs/pipeline.md`](docs/pipeline.md) | Reproducible asset build — `game/assets` is generated, not committed |
-| [`docs/project-structure.md`](docs/project-structure.md) | Full folder layout and module boundaries |
-
-## Register
+## What kind of game this is
 
 **Sad horror, with something chasing you.** Every monster in this game is a
 disappointed child. Nothing can be killed — the only verbs are **run, hide, and
 be kind**, and being kind is the most expensive one.
 
+- **Choose** boy or girl at the start. The child in the cupboard has *your* face.
+- **A twelve-minute prologue** with no enemies in it. A small house, a cake with
+  eleven candles, and a wardrobe door that does not sit flush.
+- **Ghouls hunt you by sound.** Running is loud. Walking is quiet. Closed doors
+  are free.
+- **Your companion is taken from you in Act II**, and it is your fault — you were
+  running from a ghoul. That turns the game from a descent into a rescue.
+- **One ending.** They die. You escape.
+
+Runs on **anything** — target hardware is a 2017 integrated graphics card.
+Under 50 MB. Free on itch.io.
+
+---
+
+## Contents
+
+| Doc | What it covers |
+| --- | --- |
+| [`docs/prologue.md`](docs/prologue.md) | **The opening twelve minutes**, beat by beat |
+| [`docs/plot.md`](docs/plot.md) | The full plot, the ghouls, the death |
+| [`docs/story.md`](docs/story.md) | Canon rules, cast, continuity bible, tone rules |
+| [`docs/worlds.md`](docs/worlds.md) | Five acts — layouts, chase mechanics, scares |
+| [`docs/art-direction.md`](docs/art-direction.md) | **How the models get made.** Pipeline, budgets, the tricks |
+| [`docs/tech-stack.md`](docs/tech-stack.md) | Engine, why it runs on anything, perf budgets |
+| [`docs/distribution.md`](docs/distribution.md) | **Where this gets published** — itch.io, free, no upfront cost |
+| [`docs/pipeline.md`](docs/pipeline.md) | Reproducible asset build — `game/assets` is generated, not committed |
+| [`docs/project-structure.md`](docs/project-structure.md) | Folder layout and module boundaries |
+
 ---
 
 ## Status
 
-Pre-production. **No game code has been written yet** — this repo currently holds
-the design documents only. Art and code start after the design is signed off.
+**Pre-production. No game code yet.** This repo holds the design documents only.
+
+The first buildable milestone is the **prologue** — twelve minutes, four rooms,
+no enemies, and the wardrobe door.
 
 ## Licence
 
-TBD. All original work.
+TBD. All original work — every asset is generated from Python, so there is no
+third-party licensing to untangle.

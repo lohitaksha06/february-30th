@@ -30,6 +30,13 @@ hundred children at the end of the world are all *you*.
 
 You do not get a name. Nobody ever says it out loud.
 
+**Then there are twelve minutes of house.**
+
+> **The full prologue script — every beat, every line, every sound — is in
+> [`prologue.md`](prologue.md).** Wake at 11:48. Find the cake. Go back to bed.
+> The clock turns to 11:59 and the music box stops mid-bar. Three knocks. The
+> wardrobe. Your mother unlocking the door. One input: push them in.
+
 ---
 
 ## 2. Premise
@@ -40,13 +47,18 @@ Your mother has never got it right. The 27th one year, the 1st the next, "the
 last Friday of February" the year after. This year she finally did: a cake on the
 table, eleven candles, the correct number on it.
 
-At midnight you wake to knocking from the cupboard under your window. Three
-knocks. A pause. Three knocks.
+At midnight you wake to knocking from the wardrobe under your window. Three knocks.
+A pause. Three knocks.
 
 Inside is a child with your face. Your cowlick. The gap where your front right
-tooth used to be. They are wearing clothes that are almost yours and
-specifically not — a party hat two sizes too small, a shirt buttoned inside-out,
-a jacket cut uneven at the hem.
+tooth used to be. They are wearing clothes that are almost yours and specifically
+not — a party hat two sizes too small, a shirt buttoned inside-out, a jacket cut
+uneven at the hem.
+
+**Then your mother unlocks the door downstairs** and you have about four seconds,
+and the only option available to you is to push them further in to hide them.
+
+You fall in together.
 
 > *"It's my birthday too. It's the thirtieth."*
 >
