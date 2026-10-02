@@ -55,6 +55,7 @@ Under 50 MB. Free on itch.io.
 
 | Doc | What it covers |
 | --- | --- |
+| [`docs/scope.md`](docs/scope.md) | **Read this one first.** What we cut, why, and what to build in order |
 | [`docs/prologue.md`](docs/prologue.md) | **The opening twelve minutes**, beat by beat |
 | [`docs/plot.md`](docs/plot.md) | The full plot, the ghouls, the death |
 | [`docs/story.md`](docs/story.md) | Canon rules, cast, continuity bible, tone rules |
@@ -67,12 +68,28 @@ Under 50 MB. Free on itch.io.
 
 ---
 
+## Scope — the short version
+
+The full design is **five acts and 4–6 hours, which is 38–56 weeks of work for
+two beginners.** The shipped game should be:
+
+| | |
+| --- | --- |
+| **Length** | **45–60 minutes** |
+| **Levels** | 3 — the house, the 30th, the kitchen |
+| **Acts** | 2 — the fall, and the party |
+| **New systems** | 4 — dialogue, chase, "is this my birthday", the death |
+| **Geometry** | ~6,000 triangles |
+
+The five acts are not deleted — they are in `docs/` and become the next game.
+**Build the prologue first.** Twelve minutes, four rooms, no enemies. Finishing
+that one thing proves the project works.
+
+Full reasoning: [`docs/scope.md`](docs/scope.md)
+
 ## Status
 
 **Pre-production. No game code yet.** This repo holds the design documents only.
-
-The first buildable milestone is the **prologue** — twelve minutes, four rooms,
-no enemies, and the wardrobe door.
 
 ## Licence
 
