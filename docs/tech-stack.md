@@ -123,6 +123,10 @@ Godot is ~100 MB installed and exports to **~50 MB with no runtime dependency.**
 The player downloads one folder and double-clicks it. No engine install, no
 launcher, no account, no sign-up.
 
+Godot also exports to **Android natively** — same project, one checkbox, and the
+`.aab` Play requires is ~60 MB because the arm64 engine runtime is bundled. That
+is what makes the two-storefront plan in §8 possible without a second codebase.
+
 This is a distribution decision as much as a technical one — see
 [`distribution.md`](distribution.md).
 
@@ -204,19 +208,129 @@ nobody has looked at yet. It is ~200 lines and it de-risks the entire project.
 
 ---
 
-## 8. Platform targets
+## 8. Platform targets — two storefronts from day one
 
-**Day one:**
+**Desktop and mobile ship together.** Same project, same release. Not
+desktop-now-mobile-later.
 
-| Platform | Notes |
-| --- | --- |
-| **Windows** | Primary. x86_64, ~50 MB |
-| **Linux** | ~50 MB, AppImage |
-| **itch.io** | Web build for the demo, paid full build for the game |
-| **Steam** | Intended storefront |
+The reason is scheduling, not preference: **the input layer is far cheaper to
+get right before you write it than after.** A touch scheme bolted onto a finished
+game is a rewrite; one designed in from the start is a second native target. The
+decision gets made here, while it is still free.
 
-**Later, if the game earns it:** macOS (easy), then console (hard — revisit the
-engine decision at that point, honestly).
+| Platform | Notes | Store |
+| --- | --- | --- |
+| **Windows** | Primary. x86_64, ~50 MB | itch.io |
+| **Linux** | AppImage, ~50 MB | itch.io |
+| **Web (HTML5)** | Playable in-browser, no download | itch.io + GitHub Pages |
+| **Android** | `.aab`, arm64-v8a | **Google Play** |
+
+**Not day one:** macOS (easy, add later), iOS ($99/yr **and** a review queue that
+would stall releases), Steam ($100 upfront — see [`distribution.md`](distribution.md)).
+
+### 8.1 Why mobile is not a port
+
+The core verb of this game is **crouch-walking to stay quiet.** That is a
+hold-and-release gesture on a thumb, and it is the single thing that decides
+whether the Android build is playable or a slideshow. So the whole input layer is
+designed around **two thumbs and no keyboard**, from the first commit.
+
+| Verb | Desktop | Mobile |
+| --- | --- | --- |
+| Move | WASD | Left-thumb virtual stick |
+| **Crouch** | Shift (hold) | **Left thumb, outer ring — hold** |
+| **Flashlight** | F (hold) | **Right thumb, lower button — hold** |
+| Look | Mouse | Drag anywhere on the right half |
+| Interact / say the birthday | E | Large centred tap |
+| Dialogue advance | Space / click | Tap |
+| Pause | Esc | System back button |
+
+### 8.2 The three rules that make touch work here
+
+Non-negotiable. They are the difference between a playable Android build and a
+bad one.
+
+1. **Crouch and flashlight are hold-to-use, never toggles.** In a chase the
+   player wants crouch held continuously, and the flashlight flicked on and off
+   constantly — it trades silence for safety (see `worlds.md`). A toggle forces a
+   re-press at exactly the moment a hand is shaking.
+
+2. **The stick spawns under the thumb at rest**, not in a corner. A fixed corner
+   means constant reaching during panic.
+
+3. **Look-drag sensitivity drops 40% while crouched.** Precision matters more when
+   being careful. Small change, disproportionate improvement in feel.
+
+### 8.3 The performance difference, and why it is fine
+
+Mobile gets a **harder** budget. It is survivable because of decisions already
+made:
+
+| | Desktop | Android |
+| --- | --- | --- |
+| Internal render res | 320×180 | **320×180** |
+| Shadow maps | 0 | 0 |
+| Dynamic lights | 2 | **2** |
+| Draw calls | < 250 | < 250 |
+| Target | GTX 1050 / Iris Xe | **Adreno 610 / Mali-G57** |
+
+An Adreno 610 is roughly a GTX 1050 minus the CPU. Because the art direction
+already renders at 320×180 with no shadows and one material, **the same scene runs
+on a mid-range 2020 Android phone.** The pixel ratio does the work polycount would
+otherwise have to.
+
+The real mobile cost is **battery and thermal** — 30 fps 3D for 45 minutes warms
+a phone. Mitigations: the 30 fps cap (already), plus a settings toggle that drops
+internal render to 256×144 on devices reporting thermal throttling.
+
+### 8.4 Android build settings
+
+- **arm64-v8a only.** armeabi-v7a is dead as a requirement and doubles the
+  bundle for nothing. Godot 4 defaults to 64-bit.
+- Export as **`.aab`** (Android App Bundle) — Play requires it.
+- Target SDK: current Play requirement. It moves yearly; check before release.
+- `min_sdk`: low enough for most 2020 hardware, high enough to avoid supporting
+  a decade-old device neither of us has.
+- **Landscape only.** A 16:9 locked frame is correct for a fixed internal render
+  resolution and sidesteps the layout problem entirely.
+
+### 8.5 Release path — Google Play
+
+Google requires a **closed test with at least 12 testers for 14 days** before
+production, for new personal accounts.
+
+| Stage | Who | Notes |
+| --- | --- | --- |
+| **Internal testing** | You | Instant, no tester minimum. **Ship here first.** |
+| **Closed testing** | 12+ people, 14 days | The mandatory gate |
+| **Production** | Public | |
+
+This is the real calendar cost: plan for **three weeks**, not three days.
+
+**Content policy, stated plainly:** this is horror featuring the death of a child.
+The IARC questionnaire asks directly about death and whether characters are
+minors. Answer honestly. The likely result is a **content descriptor** on the
+listing ("depictions of death", mild fear) — a commercial label, not a policy
+problem. Nothing here gets rejected for being horror; this is well inside normal
+for the category.
+
+### 8.6 What mobile changes about the design, honestly
+
+Three consequences, none of them negotiable:
+
+- **Session length.** 45 minutes on a phone, in the dark, with headphones, is a
+  long ask. **Cut a short Act I demo as the Play surface** — prologue plus one
+  hour, ending at the first ghoul. That is the download driver. Full game $4–6,
+  demo free.
+- **Aspect and posture.** Held vertically, a 16:9 game is small and the scanlines
+  may not resolve. Locked landscape, with an **intentional letterbox** so the
+  black bars read as part of the aesthetic.
+- **The quiet moments do not survive a commute.** Audio carries 70% of this game
+  and it needs stillness. The desktop version is the "real" one; the phone build
+  is the accessible door into it.
+
+That last point is worth saying plainly: **the mobile build is how people find
+the game, not necessarily how they finish it.**
 
 ---
 

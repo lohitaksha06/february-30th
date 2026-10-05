@@ -46,8 +46,12 @@ be kind**, and being kind is the most expensive one.
   running from a ghoul. That turns the game from a descent into a rescue.
 - **One ending.** They die. You escape.
 
-Runs on **anything** — target hardware is a 2017 integrated graphics card.
-Under 50 MB. Free on itch.io.
+Runs on **anything** — target hardware is a 2017 integrated graphics card, and
+**an Adreno 610 phone**. Under 50 MB.
+
+**Two storefronts, one build:** free on **itch.io**, and your own app on **Google
+Play**. Both ship together, because designing the touch controls in from the start
+is free and bolting them onto a finished game is a rewrite.
 
 ---
 
@@ -56,13 +60,13 @@ Under 50 MB. Free on itch.io.
 | Doc | What it covers |
 | --- | --- |
 | [`docs/scope.md`](docs/scope.md) | **Read this one first.** What we cut, why, and what to build in order |
+| [`docs/plot.md`](docs/plot.md) | **The plot.** Why Feb 30th exists, Wren, your mother, the death |
 | [`docs/prologue.md`](docs/prologue.md) | **The opening twelve minutes**, beat by beat |
-| [`docs/plot.md`](docs/plot.md) | The full plot, the ghouls, the death |
 | [`docs/story.md`](docs/story.md) | Canon rules, cast, continuity bible, tone rules |
 | [`docs/worlds.md`](docs/worlds.md) | Five acts — layouts, chase mechanics, scares |
 | [`docs/art-direction.md`](docs/art-direction.md) | **How the models get made.** Pipeline, budgets, the tricks |
-| [`docs/tech-stack.md`](docs/tech-stack.md) | Engine, why it runs on anything, perf budgets |
-| [`docs/distribution.md`](docs/distribution.md) | **Where this gets published** — itch.io, free, no upfront cost |
+| [`docs/tech-stack.md`](docs/tech-stack.md) | Engine, perf budgets, **§8 the mobile input map** |
+| [`docs/distribution.md`](docs/distribution.md) | **Where this gets published** — itch.io **and** Google Play, one build |
 | [`docs/pipeline.md`](docs/pipeline.md) | Reproducible asset build — `game/assets` is generated, not committed |
 | [`docs/project-structure.md`](docs/project-structure.md) | Folder layout and module boundaries |
 
