@@ -118,7 +118,7 @@ front of people:
 
 ---
 
-## 5. The thing worth understanding
+## 4. The thing worth understanding
 
 **You are not trying to make a lot of money from this.** And that is worth saying
 plainly, because it changes every decision.
@@ -143,7 +143,7 @@ is worth more than the storefront.
 
 ---
 
-## 6. Publishing checklist
+## 5. Publishing checklist
 
 ### itch.io
 
@@ -183,7 +183,7 @@ is worth more than the storefront.
 
 ---
 
-## 7. Legal bits, handled early
+## 6. Legal bits, handled early
 
 Cheap to do now, painful later.
 
