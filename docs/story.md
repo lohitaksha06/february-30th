@@ -96,7 +96,7 @@ in for a birthday that happened years ago.
 
 | Rule | Detail |
 | --- | --- |
-| **Hunts sound** | Running is loud. Crouch-walking is quiet. Sprinting away is the worst thing you can do. |
+| **Hunts sound** | Sprinting is very loud. Walking is quiet. Crouch is silent. Sprinting away from one is the worst thing you can do — and it is exactly how you lose your companion. |
 | **Loses interest** | Break line of sight *and* stay quiet long enough and it wanders off |
 | **Cannot open a closed door** | A closed door is real, physical, and safe. Use them. |
 | **Cannot be killed** | No weapon exists in this game |

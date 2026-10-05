@@ -235,31 +235,108 @@ hold-and-release gesture on a thumb, and it is the single thing that decides
 whether the Android build is playable or a slideshow. So the whole input layer is
 designed around **two thumbs and no keyboard**, from the first commit.
 
-| Verb | Desktop | Mobile |
-| --- | --- | --- |
-| Move | WASD | Left-thumb virtual stick |
-| **Crouch** | Shift (hold) | **Left thumb, outer ring — hold** |
-| **Flashlight** | F (hold) | **Right thumb, lower button — hold** |
-| Look | Mouse | Drag anywhere on the right half |
-| Interact / say the birthday | E | Large centred tap |
-| Dialogue advance | Space / click | Tap |
-| Pause | Esc | System back button |
+Four held gestures at once. Here is the whole screen, and the layout is not
+negotiable because the geometry is.
 
-### 8.2 The three rules that make touch work here
+```
+  +------------------------------------------+
+  |                              +------+   |
+  |        (look: drag)          | LIGHT|   |   upper right,
+  |                              +------+   |   thumb-reachable
+  |                                              |
+  |                          +-----+             |
+  |          +-----+          |SPRNT|             |   right of the right
+  |          |INTCT|          +-----+             |   thumb
+  |          +-----+                            |
+  |  +---+                     +-----+           |
+  |  |CRH|                     |SPRNT|           |
+  |  +---+    +---------+       +-----+           |
+  |          |  MOVE  |                         |
+  |          | (stick)|                         |
+  |          +---------+                         |
+  +------------------------------------------+
+```
+
+| Verb | Desktop | Mobile | Position |
+| --- | --- | --- | --- |
+| Move | WASD | Left-thumb virtual stick | Bottom-left, spawns under the thumb |
+| **Crouch** | C or Right Ctrl (hold) | Hold button | **Left**, above the stick |
+| **Sprint** | Space or Left Shift (hold) | Hold button | **Right**, under the light |
+| **Flashlight** | F (hold) | Hold button | **Upper right** |
+| Look | Mouse | Drag anywhere on the right half | Everywhere right of the stick |
+| Interact / say the birthday | E | Large tap target | **Centre**, thumb-agnostic |
+| Dialogue advance | Space / click | Tap | Anywhere |
+| Pause | Esc | System back button | OS-level |
+
+**Four held buttons plus a stick is a lot, and it is still one per thumb.**
+Crouch sits on the same thumb as movement, and sprint and light sit on the same
+thumb as looking. No finger ever leaves its side. That is what makes it playable
+rather than a dexterity puzzle.
+
+The **interact target is deliberately centred and finger-agnostic** — you tap it
+with either thumb. Interact is used in conversation and in moments where both
+thumbs are busy holding things, so it cannot live on one side.
+
+### 8.2 Sprint is the loudest thing in the game
+
+This is not a speed button and it must not be tuned like one.
+
+**Running is what gets you caught.** Ghouls hunt by sound (`worlds.md`), and
+sprint is the loudest state in the game by a wide margin. So:
+
+| State | Speed | Noise | Notes |
+| --- | --- | --- | --- |
+| Crouch | 0.6 m/s | ~silent | The safe default |
+| Walk | 1.8 m/s | quiet | Normal movement |
+| **Sprint** | **4.2 m/s** | **very loud** | Twice walk, and it is a *decision* |
+
+**Sprint and crouch are mutually exclusive.** Holding crouch cancels sprint, and
+the stick's outer radius past 70% triggers sprint only when crouch is not held.
+One thumb sliding outward is sprint; that thumb sliding inward is crouch. It is
+the same muscle, so it is learnable in one chase.
+
+**There is no stamina bar.** This is the decision from `worlds.md` and sprint is
+where it matters most: sprint is limited by **geometry**, not by a gauge. Alleys
+are short enough to sprint safely, open rooms are not, and the level teaches you
+which is which through shape alone. A stamina meter would turn sprinting into an
+account to watch; geometry makes it a decision about the room you are standing in.
+
+**Sprint has no cooldown and cannot be disabled.** It is always available. It just
+costs you silence, and the player is the only one who knows what that costs.
+
+### 8.3 The four rules that make touch work here
 
 Non-negotiable. They are the difference between a playable Android build and a
 bad one.
 
-1. **Crouch and flashlight are hold-to-use, never toggles.** In a chase the
-   player wants crouch held continuously, and the flashlight flicked on and off
-   constantly — it trades silence for safety (see `worlds.md`). A toggle forces a
-   re-press at exactly the moment a hand is shaking.
+1. **Crouch, sprint and flashlight are hold-to-use, never toggles.** In a chase
+   the player wants crouch held continuously, sprint burst-and-released, and the
+   flashlight flicked constantly — it trades silence for safety (see `worlds.md`).
+   A toggle forces a re-press at exactly the moment a hand is shaking.
 
 2. **The stick spawns under the thumb at rest**, not in a corner. A fixed corner
    means constant reaching during panic.
 
-3. **Look-drag sensitivity drops 40% while crouched.** Precision matters more when
-   being careful. Small change, disproportionate improvement in feel.
+3. **Look-drag sensitivity drops 40% while crouched**, and rises slightly during
+   sprint — you are moving too fast to check details, and the game should say so.
+
+4. **Sprint and being-acquired both get haptic pulses**, and they are different.
+   A short tick entering sprint; a longer buzz when a ghoul locks on.
+
+   This matters more than it looks. **Audio carries 70% of this game's fear
+   budget** (`art-direction.md` §9), and the primary warning is the bad cheer —
+   which a phone playing through a speaker on a train simply destroys. Haptics
+   are the second channel for that warning. Without them the mobile build loses
+   the single most important piece of information the game can give you.
+
+**No visible buttons in the way.** Crouch, sprint and light are transparent hit
+areas that fade in on touch. Only crouch and sprint show an icon at all, because
+those two must be findable without looking down.
+
+**Desktop keybinds are rebindable and non-default.** C for crouch rather than
+Shift, because Shift is not adjacent to WASD. This is a real ergonomic note: the
+three movement states must be reachable **without moving the hand's home
+position**, and every keyboard player uses Shift as a modifier by reflex.
 
 ### 8.3 The performance difference, and why it is fine
 

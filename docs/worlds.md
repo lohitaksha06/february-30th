@@ -65,9 +65,24 @@ combat, no stamina upgrades, no weapon.
 6. **You can say its birthday** at close range, once. It stops — for about eight
    seconds. Then it remembers, and it knows where you are.
 
+### The four movement states
+
+There is no stamina bar and no cooldown. Speed is a straight trade against
+silence, and the player is the only one who knows what silence is worth.
+
+| State | Speed | Noise |
+| --- | --- | --- |
+| **Crouch** | 0.6 m/s | ~silent |
+| **Walk** | 1.8 m/s | quiet |
+| **Sprint** | 4.2 m/s | **very loud — this is what gets you caught** |
+
+**Sprint and crouch are mutually exclusive.** Sprinting is not a free speed
+upgrade; it is the loudest thing in the game, available at all times, with no
+meter and no cooldown. The only cost is that something out there is listening.
+
 ### The stamina problem
 
-**There is no stamina bar.** Running is limited by *terrain*, not by a gauge:
+**There is no stamina bar.** Sprinting is limited by *terrain*, not by a gauge:
 corridors, alleys, and cloakroom aisles are short and safe. Open rooms are long
 and lethal. The level tells you how to move by how it is shaped.
 
@@ -81,6 +96,16 @@ account to watch; geometry turns it into a decision about the room you are in.
 
 The whole combat system of this game is: run away, close a door, turn a light on,
 and — if you have to — say a dead child's birthday out loud.
+
+### The separation, and why sprint caused it
+
+The ghouls take your companion from you **during a sprint**. You were running
+from something, which is exactly what you are supposed to do, and it is still how
+you lose them.
+
+That is the whole design of Act II in one moment: the correct response to the
+threat is the thing that costs you the person, because you could not both run and
+stay close enough. Do not "fix" this by making sprint safe.
 
 ---
 
@@ -336,8 +361,9 @@ stopped listening for it.
 
 1. **No combat. Nothing can be killed.** There is no weapon and there never will be.
 2. **Every threat is a disappointed child.** There are no creatures.
-3. **Running is loud. Walking is quiet. Doors are free.**
-4. **There is no stamina bar** — movement is limited by level geometry.
+3. **Sprint is loud, walk is quiet, crouch is silent, and doors are free.**
+4. **There is no stamina bar and no cooldown** — movement is limited by level
+   geometry.
 5. **No procedural generation.** Every act is hand-placed.
 6. **Every scare has a fair tell** — ≥ 700 ms of warning.
 7. **Every world loops.**
