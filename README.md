@@ -93,7 +93,9 @@ Full reasoning: [`docs/scope.md`](docs/scope.md)
 
 ## Status
 
-**Pre-production. No game code yet.** This repo holds the design documents only.
+**Part 1 playable.** Open `game/project.godot` in Godot 4.7 and press F5 —
+bedroom wake-up → wardrobe → Wren → fall → title. See
+[`docs/part1-playtest.md`](docs/part1-playtest.md) for the run and itch.io export.
 
 ## Licence
 

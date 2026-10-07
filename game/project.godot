@@ -1,0 +1,70 @@
+; FEBRUARY 30th
+; Godot 4 project configuration.
+;
+; Engine: Godot 4.7 (works on 4.3+)
+; Renderer: GL Compatibility -- the widest-hardware option. See
+; docs/tech-stack.md §2. Our art direction needs almost none of Forward+.
+
+config_version=5
+
+[application]
+
+config/name="FEBRUARY 30th"
+config/description="A first-person sad-horror game about the day after your birthday."
+config/version="0.1.0-prologue"
+run/main_scene="res://scenes/prologue.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+
+[autoload]
+
+Clock="*res://src/core/time/the_clock.gd"
+GameState="*res://src/core/state/game_state.gd"
+InputSetup="*res://src/core/input/input_setup.gd"
+AudioDirector="*res://src/core/audio/audio_director.gd"
+
+[debug]
+
+gdscript/warnings/unsafe_property_access=0
+gdscript/warnings/unsafe_method_access=0
+gdscript/warnings/unsafe_cast=0
+
+[display]
+
+; 320x180 is the INTERNAL render target. See docs/art-direction.md §4.6.
+; The window stretches it up with nearest-neighbour. This single setting is
+; the largest performance lever in the whole project.
+window/size/viewport_width=320
+window/size/viewport_height=180
+window/size/window_width_override=1280
+window/size/window_height_override=720
+; Canvas items (UI, subtitles) render at window resolution so text stays
+; legible. The 3D world renders at 320x180.
+window/stretch/mode="canvas_items"
+window/handheld/orientation=1
+
+[input_devices]
+
+; Godot's own deadzone default is 0.5, which is too high for the gentle
+; analogue stick on mobile. See docs/tech-stack.md §8.2.
+pointing/emulate_touch_from_mouse=false
+
+[physics]
+
+3d/default_gravity=9.8
+common/physics_ticks_per_second=60
+
+[rendering]
+
+; GL Compatibility by default -- reaches 2017 integrated graphics and
+; mid-range phones. docs/tech-stack.md §2, §8.3.
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+
+; Nearest-neighbour on everything. The crunch is the point.
+textures/canvas_textures/default_texture_filter=0
+textures/3d/default_texture_filter=0
+
+; No MSAA anywhere -- it fights the low-resolution look and costs fill rate.
+anti_aliasing/quality/msaa_3d=0
+anti_aliasing/quality/msaa_2d=0
