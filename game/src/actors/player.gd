@@ -6,9 +6,13 @@ class_name Player
 ## There is no combat, no weapon, and no attack. Ever. The verbs are run, hide,
 ## and be kind. docs/story.md tone rule 3.
 ##
-## There is also no stamina bar. Sprint is limited by geometry -- alleys are
-## short and safe, open rooms are long and lethal. A meter would turn running
-## into an account to watch. docs/worlds.md.
+## There is also no stamina bar in the prologue. Sprint is limited by
+## geometry -- alleys are short and safe, open rooms are long and lethal.
+## docs/worlds.md.
+##
+## Act 1 (the cavern) deliberately deviates: the player asked for a limited
+## stamina bar there, so sprint drains `stamina` while `stamina_enabled`.
+## Prologue leaves it off and plays exactly as before.
 
 signal noise_emitted(radius: float)
 signal crossed_midnight
@@ -25,6 +29,14 @@ const GRAVITY := 9.8
 const JUMP_VELOCITY := 4.2
 
 var can_move := true
+
+## Act 1 stamina. Off unless the director enables it.
+var stamina_enabled := false
+var stamina := 1.0            ## 0..1, drains on sprint, regens otherwise
+var exhausted := false
+const STAMINA_DRAIN := 0.28   ## ~3.5 s of sprint from full
+const STAMINA_REGEN := 0.18
+const EXHAUST_CLEAR := 0.35   ## must recover this far before sprint returns
 
 @onready var head: Node3D = $Head
 @onready var cam: Camera3D = $Head/Camera3D
@@ -99,6 +111,21 @@ func _physics_process(delta: float) -> void:
 			speed = CROUCH_SPEED
 		InputSetup.MoveState.SPRINT:
 			speed = SPRINT_SPEED
+
+	# Act 1 stamina: sprinting on an empty bar drops you to a walk.
+	# Prologue never enables this and is unaffected.
+	if stamina_enabled:
+		var sprinting := state == InputSetup.MoveState.SPRINT and input_dir.length() > 0.1 and can_move
+		if sprinting and not exhausted:
+			stamina = maxf(0.0, stamina - STAMINA_DRAIN * delta)
+			if stamina <= 0.0:
+				exhausted = true
+		elif not sprinting:
+			stamina = minf(1.0, stamina + STAMINA_REGEN * delta)
+			if exhausted and stamina >= EXHAUST_CLEAR:
+				exhausted = false
+		if exhausted and state == InputSetup.MoveState.SPRINT:
+			speed = WALK_SPEED
 
 	var dir := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y))
 	dir.y = 0.0

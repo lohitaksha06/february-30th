@@ -10,6 +10,12 @@ var _head: MeshInstance3D
 var _body: MeshInstance3D
 var _blink_t := 0.0
 
+## Act 1 companion mode: trail the player instead of sitting.
+var following := false
+var follow_target: Node3D = null
+const FOLLOW_DIST := 1.7
+const FOLLOW_SPEED := 2.7
+
 
 func _ready() -> void:
 	_build()
@@ -98,6 +104,8 @@ func _process(delta: float) -> void:
 	if not visible:
 		return
 	_t += delta
+	if following and follow_target != null:
+		_follow(delta)
 	if breathing:
 		# tiny breathing scale on body — the wardrobe-gap tell
 		var b := 1.0 + sin(_t * 1.7) * 0.02
@@ -125,6 +133,27 @@ func _do_blink() -> void:
 
 func reveal() -> void:
 	visible = true
+
+
+func follow(target: Node3D) -> void:
+	follow_target = target
+	following = true
+	reveal()
+
+
+func _follow(delta: float) -> void:
+	var to: Vector3 = follow_target.global_position - global_position
+	to.y = 0.0
+	var d := to.length()
+	if d > FOLLOW_DIST:
+		var step: Vector3 = to.normalized() * minf(FOLLOW_SPEED * delta, d - FOLLOW_DIST * 0.6)
+		global_position += step
+		# face where we're going; lerp so the head doesn't snap
+		var yaw := atan2(-to.x, -to.z)
+		rotation.y = lerp_angle(rotation.y, yaw, minf(1.0, delta * 6.0))
+	# little hurry-bob while moving, still breathing when still
+	if d > FOLLOW_DIST + 0.2:
+		_body.position.y = 0.35 + absf(sin(_t * 9.0)) * 0.03
 
 
 func scare_pose() -> void:

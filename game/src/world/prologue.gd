@@ -475,7 +475,7 @@ func _show_title() -> void:
 	GameState.finished = true
 	_title.visible = true
 	_hud_clock.text = ""
-	_prompt.text = "[R] watch again"
+	_prompt.text = "[R] watch again    [N] descend"
 	_say("a crowd of children cheering, slightly out of time. far away.", 6.0)
 	_fade_to(0.0, 2.5)
 	_title_label.text = "FEBRUARY 30th"
@@ -486,6 +486,9 @@ func _show_title() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if state == S.TITLE and event is InputEventKey:
-		if (event as InputEventKey).physical_keycode == KEY_R and event.is_pressed():
-			get_tree().reload_current_scene()
+	if state == S.TITLE and event is InputEventKey and event.is_pressed():
+		match (event as InputEventKey).physical_keycode:
+			KEY_R:
+				get_tree().reload_current_scene()
+			KEY_N:
+				get_tree().change_scene_to_file("res://scenes/cavern.tscn")

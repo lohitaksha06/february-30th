@@ -93,9 +93,12 @@ Full reasoning: [`docs/scope.md`](docs/scope.md)
 
 ## Status
 
-**Part 1 playable.** Open `game/project.godot` in Godot 4.7 and press F5 —
-bedroom wake-up → wardrobe → Wren → fall → title. See
-[`docs/part1-playtest.md`](docs/part1-playtest.md) for the run and itch.io export.
+**Part 1 + Act 1 playable.** Open `game/project.godot` in Godot 4.7 and press F5 —
+bedroom wake-up → wardrobe → Wren → fall → title, then **N** to descend into
+the cavern (butterflies, two ghosts, hiding, breath bar). See
+[`docs/part1-playtest.md`](docs/part1-playtest.md) and
+[`docs/act1-cavern.md`](docs/act1-cavern.md). Headless smoke test:
+`godot --headless res://tests/test_act1.tscn` (8/8 pass).
 
 ## Licence
 
