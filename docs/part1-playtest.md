@@ -14,8 +14,15 @@ Playable now in Godot 4.7. Open `game/project.godot`, press **F5**.
 5. **Wardrobe.** Walk close, look at it, press **E**.
    Door swings → **mild jumpscare** (red flash + loud knock + 350ms freeze,
    fair-tell per `docs/worlds.md` rule 6) → **Wren** sitting inside.
-6. **Talk.** Press **E** through 3 lines:
-   *"It's my birthday too." / "It's the thirtieth." / "Please don't get her."*
+6. **Talk — now with real choices.** A dialogue box opens at the bottom.
+   Typewriter text: **E** completes the line, **E** again continues.
+   When options appear: **W / S** or arrows move the cursor, **E** confirms,
+   or click one. Four opening questions ("There's no thirtieth.", "What do
+   you mean?", "Are you in my cupboard?", "Are you OK?"), then follow-ups.
+   Every branch converges. "Do you want me to get mum?" gets the sting:
+   *"No. Please don't get her. Please don't."*
+   The HUD date quietly disappears during this conversation
+   (`Clock.forget_birthday()`), per Beat 7.
 7. **Mum.** Lock sound downstairs + *"Is everything alright?"*
    Press **E** within ~6s to **PUSH THEM IN**. (Timeout pushes anyway —
    the game never scores this.)
@@ -29,6 +36,8 @@ Playable now in Godot 4.7. Open `game/project.godot`, press **F5**.
 |---|---|
 | Move / look | WASD + mouse (click once to capture) |
 | Sit up / open / talk / push | E (or Enter) |
+| Dialogue advance / confirm | E, Enter, Space, or click |
+| Dialogue cursor | W / S or Up / Down |
 | Torch (hold) | F |
 | Crouch (hold) | C |
 | Sprint (hold, loud!) | Shift |

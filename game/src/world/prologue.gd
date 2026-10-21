@@ -24,6 +24,7 @@ var _flash: ColorRect
 var _title: CenterContainer
 var _title_label: Label
 var _choice_box: VBoxContainer
+var _dlg: DialogueBox
 
 var _cam: Camera3D
 var _door: MeshInstance3D
@@ -175,6 +176,11 @@ func _build_ui() -> void:
 	_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_ui.add_child(_flash)
 
+	# the one proper dialogue box. docs/prologue.md Beat 7.
+	_dlg = DialogueBox.new()
+	_dlg.name = "DialogueBox"
+	_ui.add_child(_dlg)
+
 	# choice buttons (boy / girl)
 	_choice_box = VBoxContainer.new()
 	_choice_box.set_anchors_preset(Control.PRESET_CENTER)
@@ -294,8 +300,8 @@ func _process(delta: float) -> void:
 	if state == S.KNOCK:
 		_check_wardrobe_early()
 
-	if state == S.TALK and Input.is_action_just_pressed("interact"):
-		_advance_talk()
+	# Beat 7 is handled by DialogueBox, which owns its own input while open.
+	# The prologue must not also react to E here or every press would double.
 
 	if state == S.MOM:
 		_mom_timer -= delta
@@ -399,27 +405,168 @@ func _reveal_wren() -> void:
 	(wren as Node).call("reveal")
 	GameState.met_wren = true
 	state = S.TALK
+	player.can_move = false
 	player.look_at_point(Vector3(3.0, 0.55, 0.55))
-	_talk_idx = 0
-	_talk_lines = [
-		"— It's my birthday too.",
-		"— It's the thirtieth.",
-		"— Please don't get her. Please don't.",
-	]
-	_say(_talk_lines[0], 4.0)
-	_prompt.text = "[E] ..."
+	_prompt.text = ""
+	_run_node("start")
 
 
-var _talk_lines: Array = []
-var _talk_idx := 0
+# ---------------------------------------------------------------- Beat 7
+#
+# The choice tree. docs/prologue.md Beat 7: every option converges on the
+# same beat, and the point is the player trying to be kind to something
+# they do not understand. There is no correct answer and nothing is scored.
+#
+# Format: speaker, lines (shown in order), then either another node via
+# "next" (String) or a player choice ("prompt" + "options" + "next" Array).
+
+const _DLG := {
+	"start": {
+		"speaker": "WREN",
+		"lines": ["It's my birthday too.", "It's the thirtieth."],
+		"prompt": "",
+		"options": ["There's no thirtieth.", "What do you mean?",
+			"Are you in my cupboard?", "Are you OK?"],
+		"next": ["no30", "mean", "cupboard", "ok"],
+	},
+	"no30": {
+		"speaker": "WREN",
+		"lines": ["There is. It comes after the twenty-ninth.",
+			"You just have to stay awake for it."],
+		"prompt": "",
+		"options": ["That's not how dates work.", "Are you OK?"],
+		"next": ["dates", "ok"],
+	},
+	"dates": {
+		"speaker": "WREN",
+		"lines": ["Maybe not here.", "It's how they work where I'm from."],
+		"prompt": "",
+		"options": ["Are you in my cupboard?", "Are you OK?"],
+		"next": ["cupboard", "ok"],
+	},
+	"mean": {
+		"speaker": "WREN",
+		"lines": ["The date. The one after the twenty-ninth.",
+			"It's mine. It's the thirtieth."],
+		"prompt": "",
+		"options": ["It's my birthday.", "Don't you know your birthday?",
+			"(say nothing)"],
+		"next": ["share", "dontknow", "silence"],
+	},
+	"share": {
+		"speaker": "WREN",
+		"lines": ["Then we can share it.", "I don't mind sharing."],
+		"prompt": "",
+		"options": ["Are you in my cupboard?", "Are you OK?"],
+		"next": ["cupboard", "ok"],
+	},
+	"dontknow": {
+		"speaker": "WREN",
+		"lines": ["I know the number.", "I just never got the day."],
+		"prompt": "",
+		"options": ["Why are you in my cupboard?", "Are you OK?"],
+		"next": ["cupboard", "ok"],
+	},
+	"silence": {
+		"speaker": "WREN",
+		"lines": ["You can go back to bed.", "I'll wait in here."],
+		"prompt": "",
+		"options": ["Are you in my cupboard?", "Are you OK?"],
+		"next": ["cupboard", "ok"],
+	},
+	"cupboard": {
+		"speaker": "WREN",
+		"lines": ["It's warm in here.", "Nobody looks in the cupboard."],
+		"prompt": "",
+		"options": ["You have a bed.", "Are you OK?"],
+		"next": ["bed", "ok"],
+	},
+	"bed": {
+		"speaker": "WREN",
+		"lines": ["I don't want your bed.", "I want the day."],
+		"prompt": "",
+		"options": ["Are you OK?", "(say nothing)"],
+		"next": ["ok", "silence2"],
+	},
+	"silence2": {
+		"speaker": "WREN",
+		"lines": ["That's alright.", "I'm good at waiting."],
+		"next": "ok",
+	},
+	"ok": {
+		"speaker": "WREN",
+		"lines": ["No.", "Please don't get her."],
+		"prompt": "",
+		"options": ["Do you want me to get mum?", "I won't get her."],
+		"next": ["mumsting", "promise"],
+	},
+	"mumsting": {
+		"speaker": "WREN",
+		"lines": ["No.", "Please don't get her.", "Please don't."],
+		"next": "end",
+	},
+	"promise": {
+		"speaker": "WREN",
+		"lines": ["Promise?"],
+		"prompt": "",
+		"options": ["I promise.", "(say nothing)"],
+		"next": ["end", "end2"],
+	},
+	"end2": {
+		"speaker": "WREN",
+		"lines": ["...okay."],
+		"next": "end",
+	},
+	"end": {
+		"speaker": "WREN",
+		"lines": [],
+	},
+}
 
 
-func _advance_talk() -> void:
-	_talk_idx += 1
-	if _talk_idx < _talk_lines.size():
-		_say(_talk_lines[_talk_idx], 4.0)
+func _run_node(id: String) -> void:
+	if not _DLG.has(id):
+		_start_mom()
+		return
+	var n: Dictionary = _DLG[id]
+	# Beat 7, "the player forgets their birthday": it happens by omission,
+	# during the conversation, and the HUD readout just quietly stops.
+	if id == "ok":
+		Clock.forget_birthday()
+	var lines: Array = n.get("lines", [])
+	if not lines.is_empty():
+		_dlg.show_lines(str(n.get("speaker", "WREN")), lines)
+		await _dlg.line_finished
+	if n.has("options"):
+		_dlg.show_choice(str(n.get("speaker", "YOU")), str(n.get("prompt", "")), n["options"])
+		var picked: int = await _dlg.option_chosen
+		var nxt: Array = n.get("next", [])
+		if picked < nxt.size() and str(nxt[picked]) != "":
+			_run_node(str(nxt[picked]))
+		else:
+			_start_mom()
+	elif n.has("next") and str(n["next"]) != "":
+		_run_node(str(n["next"]))
 	else:
 		_start_mom()
+
+
+## Used by tests/test_dialogue.gd. Every branch must land somewhere real.
+func validate_dialogue_tree() -> Array:
+	var errors: Array = []
+	for id in _DLG.keys():
+		var n: Dictionary = _DLG[id]
+		if n.has("options"):
+			var opts: Array = n["options"]
+			var nxt: Array = n.get("next", [])
+			if opts.size() != nxt.size():
+				errors.append("%s: %d options but %d next" % [id, opts.size(), nxt.size()])
+			for t in nxt:
+				if str(t) != "" and not _DLG.has(str(t)):
+					errors.append("%s -> missing node %s" % [id, str(t)])
+		elif n.has("next") and str(n["next"]) != "" and not _DLG.has(str(n["next"])):
+			errors.append("%s -> missing node %s" % [id, str(n["next"])])
+	return errors
 
 
 func _start_mom() -> void:
