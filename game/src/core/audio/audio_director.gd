@@ -108,6 +108,18 @@ func play_cavern_drone() -> void:
 	_music.play()
 
 
+## Same motif, different room. Pitch is the whole world's mood knob:
+## bright cave ~0.85, red cave ~0.55, street ~0.95.
+func play_world_drone(pitch := 0.7, vol := -14.0) -> void:
+	var s := _load("res://assets/audio/music_box_slow.wav")
+	if s == null:
+		return
+	_music.stream = s
+	_music.pitch_scale = pitch
+	_music.volume_db = vol
+	_music.play()
+
+
 func restore_music_volume() -> void:
 	_music.volume_db = -8.0
 

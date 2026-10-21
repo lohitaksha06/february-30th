@@ -328,12 +328,14 @@ func _finish() -> void:
 		return
 	state = S.END
 	AudioDirector.stop_chase()
-	AudioDirector.stop_music()
 	player.can_move = false
-	_card.visible = true
-	_card_label.text = "THE 30TH IS WAITING\n\nto be continued  ·  [E] walk it again"
-	_fade_to(0.0, 2.0)
+	player.release_mouse()
 	_say("WREN: See? The butterflies knew.")
+	_say("WREN: One more door. Then the bright one.")
+	_fade_to(1.0, 1.6)
+	await get_tree().create_timer(2.2).timeout
+	AudioDirector.stop_music()
+	get_tree().change_scene_to_file("res://scenes/world2_mushrooms.tscn")
 
 
 func _unhandled_input(event: InputEvent) -> void:

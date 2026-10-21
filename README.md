@@ -64,6 +64,7 @@ is free and bolting them onto a finished game is a rewrite.
 | [`docs/prologue.md`](docs/prologue.md) | **The opening twelve minutes**, beat by beat |
 | [`docs/story.md`](docs/story.md) | Canon rules, cast, continuity bible, tone rules |
 | [`docs/worlds.md`](docs/worlds.md) | Five acts — layouts, chase mechanics, scares |
+| [`docs/worlds-2-4.md`](docs/worlds-2-4.md) | **The three 30th worlds** — mushroom cave, red cave, foggy street, morning ending |
 | [`docs/art-direction.md`](docs/art-direction.md) | **How the models get made.** Pipeline, budgets, the tricks |
 | [`docs/tech-stack.md`](docs/tech-stack.md) | Engine, perf budgets, **§8 the mobile input map** |
 | [`docs/distribution.md`](docs/distribution.md) | **Where this gets published** — itch.io **and** Google Play, one build |
@@ -93,12 +94,23 @@ Full reasoning: [`docs/scope.md`](docs/scope.md)
 
 ## Status
 
-**Part 1 + Act 1 playable.** Open `game/project.godot` in Godot 4.7 and press F5 —
-bedroom wake-up → wardrobe → Wren → fall → title, then **N** to descend into
-the cavern (butterflies, two ghosts, hiding, breath bar). See
-[`docs/part1-playtest.md`](docs/part1-playtest.md) and
-[`docs/act1-cavern.md`](docs/act1-cavern.md). Headless smoke test:
-`godot --headless res://tests/test_act1.tscn` (8/8 pass).
+**Playable start to finish.** Open `game/project.godot` in Godot 4.7 and press F5:
+
+1. **Prologue** — bedroom wake-up → knocking → wardrobe → Wren choice dialogue
+   → push → fall → title. Press **N**.
+2. **Act 1 — the cavern** — butterflies, two ghosts, hollows, breath bar,
+   white door.
+3. **World 2 — glowing mushroom cave** — rainbow pebbles, three crawlers.
+4. **World 3 — red cave** — three lost souls, stained rock (no gore).
+5. **World 4 — foggy street** — your house, your door, the goodbye.
+6. **The morning** — you surface in your bedroom; mum is downstairs.
+
+See [`docs/part1-playtest.md`](docs/part1-playtest.md),
+[`docs/act1-cavern.md`](docs/act1-cavern.md) and
+[`docs/worlds-2-4.md`](docs/worlds-2-4.md).
+
+Headless tests: `test_worlds` (33/33), `test_act1` (8/8), `test_dialogue`
+(11/11).
 
 ## Licence
 

@@ -39,16 +39,27 @@ var _t := 0.0
 var _body: MeshInstance3D
 var _head: MeshInstance3D
 
+## Tunables. Defaults are Act 1's ghost; later worlds override per instance
+## (crawlers are faster, the fog ghost sees further). docs/worlds.md.
+var patrol_speed := PATROL_SPEED
+var chase_speed := CHASE_SPEED
+var search_speed := SEARCH_SPEED
+var view_dist := VIEW_DIST
+var catch_dist := CATCH_DIST
+var lose_time := LOSE_TIME
+
 
 func _ready() -> void:
 	_build()
 	spawn_pos = global_position
 
 
-func setup(p: Node3D, d: Node, points: Array[Vector3]) -> void:
+func setup(p: Node3D, d: Node, points: Array) -> void:
 	player = p
 	director = d
-	patrol_points = points
+	patrol_points.clear()
+	for v in points:
+		patrol_points.append(v)
 	_wp_idx = 0
 	state = G.PATROL
 	_has_dest = false
@@ -138,10 +149,10 @@ func _physics_process(delta: float) -> void:
 		_sense_accum = 0.0
 		_think(0.1)
 
-	var speed := PATROL_SPEED
+	var speed := patrol_speed
 	match state:
 		G.CHASE:
-			speed = CHASE_SPEED
+			speed = chase_speed
 			# Hidden means unseen AND untracked: it goes to where it last
 			# saw you, not where you are. Break sightlines, then go small.
 			if _player_hidden():
@@ -150,13 +161,13 @@ func _physics_process(delta: float) -> void:
 				_dest = (player.global_position if player != null else _last_seen)
 			_has_dest = player != null
 		G.SEARCH:
-			speed = SEARCH_SPEED
+			speed = search_speed
 		G.SUSPICIOUS:
 			speed = 0.0
 			_dest = _suspect
 			_has_dest = true
 		G.PATROL:
-			speed = PATROL_SPEED
+			speed = patrol_speed
 			if not _has_dest and not patrol_points.is_empty():
 				_dest = patrol_points[_wp_idx]
 				_has_dest = true
@@ -211,11 +222,11 @@ func _think(tick: float) -> void:
 			else:
 				_lose_t += tick
 			var pd: float = global_position.distance_to(player.global_position)
-			if pd < CATCH_DIST:
+			if pd < catch_dist:
 				if director != null and director.has_method("caught_by"):
 					director.caught_by(self)
 				return
-			if _lose_t >= LOSE_TIME:
+			if _lose_t >= lose_time:
 				state = G.SEARCH
 				_search_t = 0.0
 				_dest = _last_seen + Vector3(randf_range(-2.5, 2.5), 0, randf_range(-2.5, 2.5))
@@ -266,7 +277,7 @@ func _can_see() -> bool:
 	var target: Vector3 = player.global_position + Vector3(0, 1.1, 0)
 	var to: Vector3 = target - eye
 	var dist := to.length()
-	if dist > VIEW_DIST:
+	if dist > view_dist:
 		return false
 	if dist > 0.5:
 		var fwd := -global_transform.basis.z
