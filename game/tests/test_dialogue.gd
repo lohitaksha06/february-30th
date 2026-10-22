@@ -34,6 +34,10 @@ func _ready() -> void:
 		guard += 1
 		await _wait(0.05)
 	_check("box_options_shown", box._choices.size() == 2 and box._buttons.size() == 2)
+	var panel_rect: Rect2 = box._panel.get_global_rect()
+	_check("box_panel_in_viewport",
+		panel_rect.position.x >= -0.5 and panel_rect.end.x <= 320.5
+		and panel_rect.position.y >= -0.5 and panel_rect.end.y <= 180.5)
 
 	# Keyboard cursor moves and the highlighted option is the one emitted.
 	box._set_sel(1)

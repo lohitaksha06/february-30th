@@ -255,6 +255,8 @@ func _begin_finale() -> void:
 		e.active = false
 	AudioDirector.stop_chase()
 	hud.prompt("")
+	hud.objective("")
+	hud.clear_say()
 	player.look_at_point(_exit + Vector3(0, 1.4, 0))
 	wren.global_position = player.global_position + Vector3(-1.0, 0, -1.2)
 
@@ -270,6 +272,8 @@ func _begin_finale() -> void:
 	dlg.show_lines("WREN", answer)
 	await dlg.line_finished
 	dlg.show_lines("WREN", ["Go up. The cupboard's still open.", "Leave it that way. Just in case."])
+	await dlg.line_finished
+	dlg.show_lines("WREN", ["This was the best birthday I ever had.", "Spending it with you. I mean it."])
 	await dlg.line_finished
 
 	hud.fade_to(1.0, 1.8)

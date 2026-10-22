@@ -104,7 +104,7 @@ func _build() -> void:
 	card.visible = false
 	add_child(card)
 	card_label = Label.new()
-	card_label.add_theme_font_size_override("font_size", 30)
+	card_label.add_theme_font_size_override("font_size", 22)
 	card_label.add_theme_color_override("font_color", Color(0.92, 0.94, 0.97))
 	card_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	card.add_child(card_label)

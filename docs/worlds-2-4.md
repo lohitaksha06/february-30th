@@ -1,7 +1,7 @@
 # Worlds 2–4 — the 30th, in three parts
 
 The white door at the end of Act 1 no longer shows a card. It opens into a
-chain of three worlds that ends in your own bedroom on the morning of the
+chain of three worlds that ends at your own birthday table on the evening of the
 29th.
 
 ```
@@ -12,7 +12,7 @@ prologue (bedroom)
                   └─ world3_blood.tscn   red cave       (three lost souls)
                        └─ world4_street.tscn  foggy street (two)
                             └─ goodbye at your door
-                                 └─ ending.tscn   morning, mum downstairs
+                                 └─ ending.tscn   the party, two plates
 ```
 
 Everything is still code-built. No imported models, no shadow maps, no
@@ -70,21 +70,31 @@ one warm window, a bicycle left in the road, and your front door at the end.
   >
   > **YOU:** *Come with me.* / *I'll stay.*
 
-  Both answers converge. She asks you to leave the cupboard open.
+  Both answers converge. She asks you to leave the cupboard open, then tells
+  you that spending the day with you was the best birthday they ever had. At
+  the party you understand it was a lie.
 
-## The morning
+## The party
 
 **File:** `game/src/world/ending.gd` · **Scene:** `ending.tscn`
 
-No enemies, no stamina, no chase. You surface in your bedroom at 08:12.
-The cupboard door is open, and there is a party hat inside that is too small.
+No enemies, no stamina, no chase. You came up through the cupboard that
+morning. By 6:40 PM it is the 29th, your birthday, and Mum has set the table.
+She got everything right.
 
-- Warm directional light through the window, one desk lamp, a clock that
-  reads 08:12.
-- Mum calls from downstairs: *"Happy birthday, love. Pancakes!"*
-- Optional: **E** at the cupboard. *"It smells like rain in there."*
-- **E** at the bedroom door → end card: **FEBRUARY 29th — for Wren**,
-  then **E** replays the prologue.
+- Warm dining room: one lamp over the table, dusk through the window, candle
+  light on the cake. No shadows.
+- **Two plates. Two hats.** Mum does not know why she set the second place. The
+  chair opposite you is empty.
+- Eleven candles. **E** at the cake opens the last choice: *Blow out the
+  candles.* / *Leave them burning.* Both converge.
+- The realization: at the door Wren said spending the day with you was the best
+  birthday they ever had. It was a lie — a kind one, said so you would go home
+  and have yours. *Most people get to enjoy their life. Wren didn't get to enjoy
+  theirs.*
+- You don't feel like celebrating. You sit down anyway. Mum pretends not to
+  notice.
+- End card: **FEBRUARY 29th — for Wren**, then **E** replays the prologue.
 
 ## How the chain works
 
@@ -138,17 +148,17 @@ respawn at the last checkpoint, 3 s of grace. There is no death screen.
 ```powershell
 cd game
 godot --headless --import
-godot --headless res://tests/test_worlds.tscn      # 33 checks, all three worlds + ending
+godot --headless res://tests/test_worlds.tscn      # 35 checks, all three worlds + ending
 godot --headless res://tests/test_act1.tscn        # 8 checks
-godot --headless res://tests/test_dialogue.tscn    # 11 checks
+godot --headless res://tests/test_dialogue.tscn    # 12 checks
 ```
 
 `test_worlds` asserts per cave: boot, enemy count/type, hide, chase trigger,
 chase music, catch, checkpoint respawn, and exit → `LEAVING`. For the street it
 asserts final-world data, Wren, both enemies, and that the door starts the
-finale dialogue. For the ending it asserts the card and the absence of the
-stamina bar. Scene changes are disabled under test so the test scene itself is
-not replaced.
+finale dialogue. For the ending it asserts the party boots, Mum is present, the cake choice
+opens, and the card and title appear without the stamina bar. Scene changes are
+disabled under test so the test scene itself is not replaced.
 
 ## Known limits (honest)
 

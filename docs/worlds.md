@@ -337,17 +337,23 @@ They are not frightened. They are not in pain. They are not screaming.
 
 ---
 
-## The morning
+## The party
 
 **You get out.** You were escaping as well as rescuing, and the game never makes
 you choose between them.
 
-You wake in your own bed. The 29th. Your mother is calling you down because it is
-your birthday and she remembered.
+You come up through the cupboard in the morning. By evening it is the 29th, your
+birthday, and your mother has set the table. She got everything right.
 
-The party has not been cleaned up. **Two hats. Two plates.** She does not know
-why, and will not remember making them, and by next week there will be one hat and
-she will not know that either.
+**Two hats. Two plates.** She does not know why she set the second place, and by
+next week there will be one hat and she will not know that either.
+
+At the door Wren told you that spending the day with you was the best birthday
+they ever had. You understand now that it was a lie: a kind one, said so you would
+go home and have yours. Most people get a life. Wren got an afternoon.
+
+You do not feel like celebrating. You sit down anyway, and your mother pretends
+not to notice.
 
 You remember. They are gone, something is left behind, and you are the only person
 who knows it was a person.

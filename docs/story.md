@@ -214,7 +214,8 @@ A fourth appearance is the easiest possible way to ruin this game.
 | The coat | Act III, name tag, **one letter wrong** | The cake in Act V is misspelled with **the same letter**. That is the payoff. |
 | Date on the HUD | `29` for Acts I–IV | `30` only in Act V. |
 | The music box motif | every act, 1 semitone flat, −2% tempo per loop | **Stops when they die.** First silence. |
-| Two hats, two plates | the morning after | She will not remember why. |
+| Two hats, two plates | the birthday table | She will not remember why. |
+| Wren's last line | the street door | *"Best birthday I ever had."* A kind lie, so you'd go home. |
 | Save file | `feb_29.bak` | Never acknowledged in the UI. |
 
 ---

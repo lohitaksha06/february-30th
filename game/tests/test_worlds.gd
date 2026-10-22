@@ -143,10 +143,28 @@ func _ready() -> void:
 	var ehud = ending.get("hud")
 	_check("end_boots", ehud != null)
 	_check("end_no_stamina_bar", ehud != null and not bool(ehud.get("_has_stamina")))
+	_check("end_mum_present", ending.get("mum") != null)
 	await get_tree().create_timer(0.3).timeout
-	ending.call("_go_downstairs")
-	await get_tree().create_timer(1.8).timeout
-	_check("end_card", int(ending.get("state")) == 1 and bool(ehud.card.visible))
+
+	# The cake choice opens, then the realization plays out line by line.
+	ending.call("_start_cake")
+	var dlg = ending.get("dlg")
+	var guard := 0
+	while dlg._buttons.is_empty() and guard < 40:
+		guard += 1
+		await get_tree().create_timer(0.05).timeout
+	_check("end_choice_shown", dlg._buttons.size() == 2)
+	dlg._pick(0)
+
+	# Press E through the final monologue at 10 Hz until the card state.
+	var guard2 := 0
+	while int(ending.get("state")) != 2 and guard2 < 240:
+		guard2 += 1
+		if dlg.visible:
+			dlg._advance()
+		await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(2.0).timeout
+	_check("end_card", int(ending.get("state")) == 2 and bool(ehud.card.visible))
 	_check("end_has_title", "FEBRUARY 29th" in str(ehud.card_label.text))
 
 	print("SMOKE %s (%d fails)" % ["PASS" if _fails == 0 else "FAIL", _fails])

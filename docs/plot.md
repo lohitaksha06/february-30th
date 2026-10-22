@@ -328,18 +328,20 @@ Wren smiles. There's a party hat on the table that isn't their size.
 
 **The music box stops. First silence in the entire game.**
 
-### The morning
+### The party
 
-You wake up in your own bed. It's the 29th. Your mother is in the kitchen
-calling you down, because it is your birthday and she remembered, and she got
-everything right.
+You come up through the cupboard in the morning. By evening it is the 29th,
+your birthday, and your mother has set the table. She got everything right.
 
-The party is still on the table. Nobody cleaned up — she's been asleep.
-
-**Two hats. Two plates. She put out the good plates.**
-
-She doesn't know why. She'll say she doesn't remember doing it, and by next week
+**Two hats. Two plates. She put out the good plates.** She doesn't know why she
+set the second place. She'll say she doesn't remember doing it, and by next week
 there will be one hat and she won't know that there was ever two.
+
+At the door Wren told you that spending the day with you was the best birthday
+they ever had. You know now that it was a lie: a kind one, said so you'd go home
+and have yours. Most people get a life. Wren got an afternoon.
+
+You don't feel like celebrating. You sit down anyway.
 
 You remember. That's the whole ending. Wren's gone, something's left behind, and
 you're the only person alive who knows it was a person.

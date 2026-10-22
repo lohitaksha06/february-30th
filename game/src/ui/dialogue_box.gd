@@ -41,7 +41,13 @@ var _buttons: Array[Button] = []
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# The box is authored in 1280x720 UI units. The game's canvas base is
+	# 320x180, so scale it by 0.25: a 660-wide panel becomes 165 px on the
+	# 320-wide screen and text stays legible at the 1280x720 window.
+	set_anchors_preset(Control.PRESET_TOP_LEFT)
+	position = Vector2.ZERO
+	size = Vector2(1280, 720)
+	scale = Vector2(0.25, 0.25)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visible = false
 	_build()
@@ -53,8 +59,10 @@ func _build() -> void:
 	_panel = PanelContainer.new()
 	_panel.name = "Panel"
 	_panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_panel.position = Vector2(-330, -168)
-	_panel.custom_minimum_size = Vector2(660, 140)
+	_panel.offset_left = -330
+	_panel.offset_right = 330
+	_panel.offset_top = -150
+	_panel.offset_bottom = -10
 	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var style := StyleBoxFlat.new()
@@ -99,6 +107,7 @@ func _build() -> void:
 
 ## One or more spoken lines. Emits line_finished after the last is advanced.
 func show_lines(speaker: String, lines: Array) -> void:
+	_panel.offset_top = -150.0  # line-only box: shorter
 	_choices.clear()
 	_choosing = false
 	_pending_choices = false
@@ -115,6 +124,7 @@ func show_lines(speaker: String, lines: Array) -> void:
 
 ## A spoken line followed by options. Emits option_chosen(index).
 func show_choice(speaker: String, line: String, options: Array) -> void:
+	_panel.offset_top = -210.0  # room for the option buttons
 	_lines = [line]
 	_line_i = 0
 	_choices.clear()

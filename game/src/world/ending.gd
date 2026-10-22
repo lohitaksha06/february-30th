@@ -1,95 +1,143 @@
 extends Node3D
-## The morning. You come up through the cupboard and the house is ordinary.
-## No enemies, no stamina, no chase. This is the payoff room: warm light,
-## mum downstairs, and one open cupboard door you do not close.
+## The birthday party. Evening, Feb 29th.
 ##
-## docs/worlds.md "The morning". Short on purpose -- the game has already
-## said what it needed to say at the door.
+## He got home. Mum got the day right. Two plates, two hats, and an empty
+## chair. He does not feel like celebrating: at the door Wren told him that
+## spending time together was the best birthday they ever had. He understands
+## now that it was a lie -- a kind one, said so he would go home and have his.
+##
+## No enemies, no stamina, no chase. The last room in the game is a table.
 
-enum S { MORNING, END }
+enum S { PARTY, FINALE, END }
 
 @onready var player: Player = $Player
 
 var hud: JourneyHUD
-var state: int = S.MORNING
+var dlg: DialogueBox
+var mum: Node3D
+var state: int = S.PARTY
 var _t := 0.0
+var _said_two := false
 var _said_mum := false
-var _wardrobe_done := false
 var _final := false
+var _candle_light: OmniLight3D
+var _mum_head: MeshInstance3D
 
-const WARDROBE := Vector3(0, 0, 2.6)
-const DOOR := Vector3(0, 0, -5.0)
-
-var _prompt_near := ""
+const CAKE := Vector3(0, 0.9, -0.7)
+const MUM_POS := Vector3(-2.0, 0, -2.1)
+const CAKE_REACH := 2.4
 
 
 func _ready() -> void:
 	_build_room()
+	_build_mum()
+
 	hud = JourneyHUD.new()
 	add_child(hud)
 	hud.setup(false)
+	dlg = DialogueBox.new()
+	hud.add_child(dlg)
+
 	hud.fade.color.a = 1.0
 	hud.fade_to(0.0, 2.4)
-	hud.objective("morning  ·  go downstairs")
-	hud.say("FEBRUARY 29th. 8:12 in the morning.")
-	hud.say("You came up through the cupboard. Your room. Your bed.")
-	player.teleport(0.0, 0.1, 1.4, 0.0)
+	hud.objective("it's your birthday")
+	hud.say("FEBRUARY 29th. 6:40 in the evening.")
+	hud.say("You came up through the cupboard this morning.")
+	hud.say("You don't remember the rest of the day.")
+
+	player.teleport(0.0, 0.1, 3.0, 0.0)
 	player.can_move = true
 	player.stamina_enabled = false
-	player.look_at_point(Vector3(0, 1.1, -3.0))
+	player.look_at_point(CAKE + Vector3(0, 0.45, 0))
 	AudioDirector.play_musicbox_real()
 	AudioDirector.restore_music_volume()
 
 
 func _process(delta: float) -> void:
 	_t += delta
-	if state != S.MORNING:
+	if _candle_light != null:
+		# candles breathe. One light, no shadows, free at 320x180.
+		_candle_light.light_energy = 0.55 + sin(_t * 9.0) * 0.08 + sin(_t * 23.0) * 0.03
+	if _mum_head != null:
+		_mum_head.rotation.z = sin(_t * 0.8) * 0.02
+
+	if state != S.PARTY:
 		return
 
-	if not _said_mum and _t > 4.5:
+	# Mum fills the silence. The kid does not.
+	if not _said_two and _t > 7.0:
+		_said_two = true
+		hud.say("Two plates. Two hats. Mum doesn't know why she set the second one.")
+	if not _said_mum and _t > 11.0:
 		_said_mum = true
-		hud.say('MUM (downstairs): "Happy birthday, love. Pancakes!"')
-		hud.say("Her radio is on. She is singing along to it, badly.")
+		hud.say("MUM: There you are. Happy birthday, love.")
+		hud.say("MUM: Sit down. I'll cut it.")
+		hud.objective("the candles are waiting")
 
-	# The one interactive object in the room, and it is the way you came in.
 	var pp: Vector3 = player.global_position
-	pp.y = 0.0
-	if pp.distance_to(WARDROBE) < 2.4:
-		if not _wardrobe_done:
-			_prompt_near = "[E] look in the cupboard"
-			hud.prompt(_prompt_near)
-		else:
-			hud.prompt("")
-		if not _wardrobe_done and Input.is_action_just_pressed("interact"):
-			_wardrobe_done = true
-			hud.prompt("")
-			hud.say("It smells like rain in there. A party hat. Too small.")
-			hud.say("You leave the door open.")
-			hud.objective("go downstairs")
-		return
-
-	if pp.distance_to(DOOR) < 2.0:
-		hud.prompt("[E] go downstairs")
+	if pp.distance_to(CAKE) < CAKE_REACH:
+		hud.prompt("[E] the cake")
 		if Input.is_action_just_pressed("interact"):
-			_go_downstairs()
+			_start_cake()
+	else:
+		hud.prompt("")
+
+
+# ---------------------------------------------------------------- the last scene
+
+func _start_cake() -> void:
+	if state != S.PARTY:
 		return
-
-	hud.prompt("")
-
-
-func _go_downstairs() -> void:
-	if state != S.MORNING:
-		return
-	state = S.END
+	state = S.FINALE
 	player.can_move = false
+	player.set_process_unhandled_input(false)  # hold him at the table
+	player.look_at_point(CAKE + Vector3(0, 0.2, 0))
+	hud.prompt("")
+	hud.objective("")
+	hud.clear_say()
+
+	dlg.show_choice("YOU", "You don't feel like celebrating.",
+		["Blow out the candles.", "Leave them burning."])
+	var picked: int = await dlg.option_chosen
+	if picked == 0:
+		dlg.show_lines("YOU", ["You blow them out. One for you. One for the empty chair."])
+	else:
+		dlg.show_lines("YOU", ["You let them burn. Mum doesn't ask why."])
+	await dlg.line_finished
+
+	# The realization, in his words. Wren lied so he would go home.
+	dlg.show_lines("YOU", [
+		"Two plates. Two hats. The chair opposite you is empty.",
+		"Wren said spending time with you was the best birthday they ever had.",
+		"You know now that it was a lie. They said it so you'd go home and have yours.",
+		"Most people get to enjoy their life. Wren didn't get to enjoy theirs.",
+		"You don't feel like celebrating. But you sit down anyway.",
+	])
+	await dlg.line_finished
+
+	# Mum tries. He lets her.
+	dlg.show_lines("MUM", [
+		"I set two places. I don't know why. Silly, isn't it?",
+		"Eat something, love. Please.",
+	])
+	await dlg.line_finished
+	dlg.show_lines("YOU", ["...Okay."])
+	await dlg.line_finished
+
+	_finish_ending()
+
+
+func _finish_ending() -> void:
+	state = S.END
 	player.release_mouse()
 	AudioDirector.stop_music()
-	hud.fade_to(0.55, 1.2)
-	await get_tree().create_timer(1.4).timeout
+	hud.clear_say()
+	hud.prompt("")
+	hud.objective("")
+	hud.fade_to(0.62, 1.4)
+	await get_tree().create_timer(1.6).timeout
 	hud.end_card("FEBRUARY 29th", "for Wren\n\n[E] play again")
 	_final = true
-	get_tree().create_timer(0.1).timeout  # let the card lay out before input
-	hud.fade_to(0.0, 0.4)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -133,159 +181,348 @@ func _box(pos: Vector3, size: Vector3, col: Color, collide := true, unshaded := 
 	return mi
 
 
+## Part without collision, local to a parent. Used for Mum and table dressing.
+func _part(parent: Node3D, pos: Vector3, size: Vector3, col: Color, unshaded := false) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	var bm := BoxMesh.new()
+	bm.size = size
+	mi.mesh = bm
+	mi.material_override = _mat(col, unshaded)
+	mi.position = pos
+	parent.add_child(mi)
+	return mi
+
+
+## Invisible solid box. The tablecloth and seats are too thin for _box's
+## collider rule, so furniture gets its own blocker.
+func _collider(pos: Vector3, size: Vector3) -> void:
+	var body := StaticBody3D.new()
+	body.position = pos
+	var cs := CollisionShape3D.new()
+	var sh := BoxShape3D.new()
+	sh.size = size
+	cs.shape = sh
+	body.add_child(cs)
+	add_child(body)
+
+
 func _build_room() -> void:
-	var wall := Color(0.56, 0.52, 0.46)
-	var wain := Color(0.42, 0.38, 0.34)
+	var wall := Color(0.54, 0.46, 0.38)
+	var wain := Color(0.34, 0.27, 0.22)
 	# floor / ceiling / walls
 	var floor_mi := MeshInstance3D.new()
 	var pm := PlaneMesh.new()
-	pm.size = Vector2(7, 8)
+	pm.size = Vector2(8, 10)
 	floor_mi.mesh = pm
-	floor_mi.position = Vector3(0, 0, -1)
-	floor_mi.material_override = _mat(Color(0.34, 0.24, 0.17))
+	floor_mi.position = Vector3(0, 0, 0)
+	floor_mi.material_override = _mat(Color(0.34, 0.23, 0.15))
 	add_child(floor_mi)
-	# invisible-ish collider slab under the plane
-	_box(Vector3(0, -0.26, -1), Vector3(7.0, 0.5, 8.0), Color(0.20, 0.14, 0.10))
-	_box(Vector3(0, 1.5, -5.1), Vector3(7.2, 3.1, 0.3), wall)
-	_box(Vector3(0, 1.5, 3.1), Vector3(7.2, 3.1, 0.3), wall)
-	_box(Vector3(-3.5, 1.5, -1), Vector3(0.3, 3.1, 8.2), wall)
-	_box(Vector3(3.5, 1.5, -1), Vector3(0.3, 3.1, 8.2), wall)
-	_box(Vector3(0, 3.15, -1), Vector3(7.2, 0.3, 8.2), Color(0.62, 0.59, 0.53))
-	# skirting
-	_box(Vector3(0, 0.14, -4.92), Vector3(7.0, 0.28, 0.08), wain, false)
-	_box(Vector3(-3.38, 0.14, -1), Vector3(0.08, 0.28, 8.0), wain, false)
-	_box(Vector3(3.38, 0.14, -1), Vector3(0.08, 0.28, 8.0), wain, false)
-	# rug
-	var rug := MeshInstance3D.new()
-	var rq := PlaneMesh.new()
-	rq.size = Vector2(3.4, 2.4)
-	rug.mesh = rq
-	rug.position = Vector3(0, 0.02, -2.0)
-	rug.material_override = _mat(Color(0.28, 0.16, 0.18))
-	add_child(rug)
+	_box(Vector3(0, -0.26, 0), Vector3(8.0, 0.5, 10.0), Color(0.20, 0.13, 0.09))
+	_box(Vector3(0, 1.5, -5.1), Vector3(8.4, 3.2, 0.3), wall)
+	_box(Vector3(0, 1.5, 5.1), Vector3(8.4, 3.2, 0.3), wall)
+	_box(Vector3(-4.1, 1.5, 0), Vector3(0.3, 3.2, 10.2), wall)
+	_box(Vector3(4.1, 1.5, 0), Vector3(0.3, 3.2, 10.2), wall)
+	_box(Vector3(0, 3.15, 0), Vector3(8.4, 0.3, 10.2), Color(0.60, 0.54, 0.46))
+	# wainscot
+	_box(Vector3(0, 0.55, -4.92), Vector3(8.0, 1.1, 0.08), wain, false)
+	_box(Vector3(-3.92, 0.55, 0), Vector3(0.08, 1.1, 10.0), wain, false)
+	_box(Vector3(3.92, 0.55, 0), Vector3(0.08, 1.1, 10.0), wain, false)
 
-	_bed()
-	_wardrobe()
-	_desk()
 	_window()
-	_door()
-	_posters()
+	_doorway()
+	_kitchen()
+	_table()
+	_banner()
+	_balloons()
 	_lights()
 
 
-func _bed() -> void:
-	_box(Vector3(-1.9, 0.28, -3.1), Vector3(2.2, 0.5, 3.0), Color(0.28, 0.20, 0.15))
-	_box(Vector3(-1.9, 0.58, -3.1), Vector3(2.1, 0.22, 2.9), Color(0.72, 0.70, 0.66))
-	_box(Vector3(-1.9, 0.71, -3.1), Vector3(2.0, 0.14, 2.7), Color(0.36, 0.44, 0.58))
-	_box(Vector3(-1.9, 0.74, -4.05), Vector3(1.7, 0.16, 0.55), Color(0.82, 0.80, 0.74))
-	_box(Vector3(-1.9, 0.88, -1.8), Vector3(2.0, 0.18, 0.55), Color(0.30, 0.38, 0.52))
-	# bedside table + clock
-	_box(Vector3(-0.45, 0.3, -4.3), Vector3(0.7, 0.6, 0.7), Color(0.30, 0.22, 0.16))
-	var lbl := Label3D.new()
-	lbl.text = "08:12"
-	lbl.font_size = 42
-	lbl.pixel_size = 0.0035
-	lbl.modulate = Color(0.95, 0.25, 0.20)
-	lbl.position = Vector3(-0.45, 0.66, -4.3)
-	lbl.rotation_degrees = Vector3(0, 0, 0)
-	lbl.billboard = BaseMaterial3D.BILLBOARD_DISABLED
-	lbl.no_depth_test = false
-	add_child(lbl)
+func _window() -> void:
+	# dusk outside, left wall
+	var dusk := Color(0.78, 0.48, 0.42)
+	_box(Vector3(-3.98, 1.85, -1.6), Vector3(0.06, 1.5, 2.3), dusk, false, true)
+	_box(Vector3(-3.94, 1.85, -1.6), Vector3(0.05, 1.6, 0.10), Color(0.36, 0.28, 0.22), false)
+	_box(Vector3(-3.94, 1.85, -1.6), Vector3(0.05, 0.10, 2.4), Color(0.36, 0.28, 0.22), false)
+	# curtains, half-drawn
+	_box(Vector3(-3.88, 1.85, -2.9), Vector3(0.08, 1.9, 0.55), Color(0.62, 0.48, 0.36), false)
+	_box(Vector3(-3.88, 1.85, -0.3), Vector3(0.08, 1.9, 0.55), Color(0.62, 0.48, 0.36), false)
+	# sill
+	_box(Vector3(-3.86, 1.05, -1.6), Vector3(0.18, 0.08, 2.5), Color(0.44, 0.34, 0.26), false)
 
 
-func _wardrobe() -> void:
-	var wood := Color(0.30, 0.21, 0.15)
-	var dark := Color(0.06, 0.05, 0.05)
-	_box(Vector3(0, 1.1, 2.86), Vector3(2.2, 2.2, 0.12), wood)
-	_box(Vector3(-1.05, 1.1, 2.55), Vector3(0.12, 2.2, 0.65), wood)
-	_box(Vector3(1.05, 1.1, 2.55), Vector3(0.12, 2.2, 0.65), wood)
-	_box(Vector3(0, 2.24, 2.55), Vector3(2.2, 0.12, 0.65), wood)
-	_box(Vector3(0, 0.06, 2.55), Vector3(2.2, 0.12, 0.65), wood, false)
-	# interior dark
-	_box(Vector3(0, 1.08, 2.78), Vector3(1.9, 2.0, 0.04), dark, false, true)
-	# open doors, angled out into the room
-	var dl := _box(Vector3(-0.98, 1.1, 2.25), Vector3(0.08, 2.12, 0.95), wood, false)
-	dl.rotation_degrees = Vector3(0, -52, 0)
-	var dr := _box(Vector3(0.98, 1.1, 2.25), Vector3(0.08, 2.12, 0.95), wood, false)
-	dr.rotation_degrees = Vector3(0, 52, 0)
-	# the party hat on the floor of the cupboard. Too small, like Wren's.
+func _doorway() -> void:
+	# the stairs you came up. Dark, but not a threat. Not any more.
+	_box(Vector3(0, 1.3, 4.94), Vector3(1.3, 2.6, 0.12), Color(0.10, 0.08, 0.08), false)
+	_box(Vector3(-0.72, 1.35, 4.9), Vector3(0.12, 2.7, 0.2), Color(0.30, 0.22, 0.16), false)
+	_box(Vector3(0.72, 1.35, 4.9), Vector3(0.12, 2.7, 0.2), Color(0.30, 0.22, 0.16), false)
+	_box(Vector3(0, 2.72, 4.9), Vector3(1.6, 0.12, 0.2), Color(0.30, 0.22, 0.16), false)
+
+
+func _kitchen() -> void:
+	var cabinet := Color(0.40, 0.33, 0.25)
+	var counter := Color(0.60, 0.56, 0.48)
+	# counter along the back wall
+	_box(Vector3(-1.6, 0.45, -4.45), Vector3(5.0, 0.9, 0.9), cabinet)
+	_box(Vector3(-1.6, 0.92, -4.45), Vector3(5.2, 0.08, 1.0), counter)
+	# sink
+	_box(Vector3(-1.2, 0.94, -4.42), Vector3(0.7, 0.03, 0.45), Color(0.62, 0.64, 0.64), false, true)
+	_box(Vector3(-1.2, 1.12, -4.62), Vector3(0.06, 0.35, 0.06), Color(0.55, 0.55, 0.52), false)
+	# upper cabinets
+	_box(Vector3(-1.6, 2.2, -4.7), Vector3(5.0, 0.8, 0.5), cabinet)
+	# fridge
+	_box(Vector3(2.2, 1.0, -4.4), Vector3(1.0, 2.0, 0.8), Color(0.72, 0.70, 0.66))
+	_box(Vector3(2.2, 1.35, -3.98), Vector3(0.06, 0.25, 0.05), Color(0.30, 0.30, 0.30), false)
+	# a dish towel
+	_box(Vector3(-1.2, 0.78, -3.96), Vector3(0.32, 0.35, 0.02), Color(0.62, 0.30, 0.28), false)
+
+
+func _table() -> void:
+	var cloth := Color(0.80, 0.75, 0.64)
+	var wood := Color(0.34, 0.24, 0.16)
+	# table
+	_box(Vector3(0, 0.74, -0.7), Vector3(2.2, 0.10, 1.8), wood)
+	_box(Vector3(0, 0.80, -0.7), Vector3(2.3, 0.04, 1.9), cloth, false)
+	_collider(Vector3(0, 0.42, -0.7), Vector3(2.2, 0.82, 1.8))
+	for x in [-0.9, 0.9]:
+		for z in [-1.4, 0.0]:
+			_box(Vector3(x, 0.37, z), Vector3(0.10, 0.74, 0.10), wood, false)
+	# one empty chair, pulled out at the right. The player stands.
+	_chair(Vector3(1.55, 0, -0.7), -0.24)
+	# plates: yours on the left, the second place at the right end. Both visible.
+	_plate(Vector3(-0.55, 0.85, 0.05))
+	_plate(Vector3(0.75, 0.85, -0.70))
+	# two hats, one on each plate. The second is the wrong size.
+	_hat(Vector3(-0.53, 0.89, 0.07), Color(0.68, 0.22, 0.24), 0.0)
+	_hat(Vector3(0.73, 0.89, -0.68), Color(0.26, 0.34, 0.62), 14.0)
+	_cake()
+
+
+func _chair(p: Vector3, back_z: float) -> void:
+	var wood := Color(0.50, 0.34, 0.21)
+	_collider(p + Vector3(0, 0.6, 0), Vector3(0.55, 1.2, 0.55))
+	_box(p + Vector3(0, 0.45, 0), Vector3(0.5, 0.08, 0.5), wood, false)
+	_box(p + Vector3(0, 0.50, 0), Vector3(0.42, 0.06, 0.42), Color(0.44, 0.18, 0.16), false)
+	_box(p + Vector3(0, 0.82, back_z), Vector3(0.5, 0.68, 0.08), wood, false)
+	for x in [-0.2, 0.2]:
+		for z in [-0.2, 0.2]:
+			_box(p + Vector3(x, 0.22, z), Vector3(0.06, 0.44, 0.06), Color(0.36, 0.24, 0.15), false)
+
+
+func _plate(p: Vector3) -> void:
+	var plate := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.24
+	cm.bottom_radius = 0.20
+	cm.height = 0.03
+	cm.radial_segments = 12
+	plate.mesh = cm
+	plate.position = p
+	plate.material_override = _mat(Color(0.88, 0.86, 0.80), true)
+	add_child(plate)
+
+
+func _hat(p: Vector3, col: Color, tilt: float) -> void:
 	var hat := MeshInstance3D.new()
 	var cone := CylinderMesh.new()
 	cone.top_radius = 0.0
-	cone.bottom_radius = 0.07
-	cone.height = 0.13
+	cone.bottom_radius = 0.12
+	cone.height = 0.30
+	cone.radial_segments = 8
 	hat.mesh = cone
-	hat.position = Vector3(0.25, 0.15, 2.55)
-	hat.rotation_degrees = Vector3(0, 0, 12)
-	hat.material_override = _mat(Color(0.75, 0.28, 0.30))
+	hat.position = p + Vector3(0, 0.15, 0)
+	hat.rotation_degrees = Vector3(tilt, 0, -tilt * 0.5)
+	hat.material_override = _mat(col)
 	add_child(hat)
+	# elastic string, because party hats always have one
+	_box(p + Vector3(0, 0.04, 0.02), Vector3(0.01, 0.01, 0.18), Color(0.75, 0.70, 0.60), false)
 
 
-func _desk() -> void:
-	_box(Vector3(2.6, 0.72, -3.4), Vector3(1.5, 0.1, 0.8), Color(0.33, 0.24, 0.17))
-	for x in [-0.65, 0.65]:
-		_box(Vector3(2.6 + x, 0.36, -3.4), Vector3(0.1, 0.72, 0.7), Color(0.28, 0.20, 0.15))
-	_box(Vector3(2.6, 0.86, -3.75), Vector3(0.5, 0.18, 0.3), Color(0.16, 0.16, 0.18), false)
-	_box(Vector3(2.6, 0.92, -3.62), Vector3(0.36, 0.02, 0.22), Color(0.7, 0.85, 0.95), false, true)
-	# chair
-	_box(Vector3(2.5, 0.42, -2.6), Vector3(0.55, 0.08, 0.55), Color(0.30, 0.22, 0.16), false)
-	_box(Vector3(2.5, 0.8, -2.35), Vector3(0.55, 0.7, 0.08), Color(0.30, 0.22, 0.16), false)
+func _cake() -> void:
+	var plate := MeshInstance3D.new()
+	var pm := CylinderMesh.new()
+	pm.top_radius = 0.42
+	pm.bottom_radius = 0.38
+	pm.height = 0.04
+	pm.radial_segments = 16
+	plate.mesh = pm
+	plate.position = CAKE + Vector3(0, -0.03, 0)
+	plate.material_override = _mat(Color(0.78, 0.76, 0.70), true)
+	add_child(plate)
+
+	var body := MeshInstance3D.new()
+	var bm := CylinderMesh.new()
+	bm.top_radius = 0.34
+	bm.bottom_radius = 0.36
+	bm.height = 0.22
+	bm.radial_segments = 16
+	body.mesh = bm
+	body.position = CAKE
+	body.material_override = _mat(Color(0.62, 0.38, 0.30))
+	add_child(body)
+
+	var icing := MeshInstance3D.new()
+	var im := CylinderMesh.new()
+	im.top_radius = 0.35
+	im.bottom_radius = 0.35
+	im.height = 0.04
+	im.radial_segments = 16
+	icing.mesh = im
+	icing.position = CAKE + Vector3(0, 0.12, 0)
+	icing.material_override = _mat(Color(0.90, 0.80, 0.68))
+	add_child(icing)
+
+	# eleven candles: he is eleven
+	for i in range(11):
+		var a := TAU * float(i) / 11.0
+		var r := 0.22
+		var p := CAKE + Vector3(cos(a) * r, 0.20, sin(a) * r)
+		var candle := MeshInstance3D.new()
+		var cm := CylinderMesh.new()
+		cm.top_radius = 0.012
+		cm.bottom_radius = 0.014
+		cm.height = 0.16
+		cm.radial_segments = 4
+		candle.mesh = cm
+		candle.position = p + Vector3(0, 0.08, 0)
+		candle.material_override = _mat(Color(0.90, 0.82, 0.62))
+		add_child(candle)
+		var flame := MeshInstance3D.new()
+		var fq := QuadMesh.new()
+		fq.size = Vector2(0.035, 0.07)
+		flame.mesh = fq
+		flame.position = p + Vector3(0, 0.20, 0)
+		var flame_mat := _mat(Color(1.0, 0.78, 0.30), true)
+		flame_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+		flame.material_override = flame_mat
+		add_child(flame)
+
+	_candle_light = OmniLight3D.new()
+	_candle_light.light_color = Color(1.0, 0.72, 0.38)
+	_candle_light.light_energy = 0.6
+	_candle_light.omni_range = 3.2
+	_candle_light.shadow_enabled = false
+	_candle_light.position = CAKE + Vector3(0, 0.35, 0)
+	add_child(_candle_light)
 
 
-func _window() -> void:
-	# right wall, morning outside
-	var sun := Color(1.0, 0.93, 0.78)
-	_box(Vector3(3.34, 1.95, -1.4), Vector3(0.08, 1.7, 2.0), sun, false, true)
-	_box(Vector3(3.30, 1.95, -1.4), Vector3(0.06, 1.8, 0.08), Color(0.45, 0.40, 0.34), false)
-	_box(Vector3(3.30, 1.95, -1.4), Vector3(0.06, 0.08, 2.1), Color(0.45, 0.40, 0.34), false)
-	# curtains
-	_box(Vector3(3.22, 1.95, -2.55), Vector3(0.10, 1.9, 0.5), Color(0.72, 0.66, 0.55), false)
-	_box(Vector3(3.22, 1.95, -0.25), Vector3(0.10, 1.9, 0.5), Color(0.72, 0.66, 0.55), false)
+func _banner() -> void:
+	# bunting: eight triangles of mis-matched colour, strung across the ceiling
+	var cols: Array[Color] = [
+		Color(0.78, 0.24, 0.26), Color(0.85, 0.66, 0.22), Color(0.28, 0.52, 0.70),
+		Color(0.32, 0.62, 0.40), Color(0.72, 0.36, 0.62), Color(0.85, 0.66, 0.22),
+		Color(0.28, 0.52, 0.70), Color(0.78, 0.24, 0.26),
+	]
+	for i in range(8):
+		var x := -3.2 + i * 0.9
+		var tri := MeshInstance3D.new()
+		var pm := PrismMesh.new()
+		pm.size = Vector3(0.42, 0.5, 0.02)
+		tri.mesh = pm
+		tri.position = Vector3(x, 2.55, -3.3)
+		tri.rotation_degrees = Vector3(180, 0, 0)
+		tri.material_override = _mat(cols[i], true)
+		add_child(tri)
+	# string
+	_box(Vector3(0, 2.82, -3.3), Vector3(7.2, 0.015, 0.015), Color(0.60, 0.56, 0.48), false, true)
+
+	var sign3d := Label3D.new()
+	sign3d.text = "HAPPY BIRTHDAY"
+	sign3d.font_size = 48
+	sign3d.pixel_size = 0.0045
+	sign3d.modulate = Color(0.94, 0.80, 0.52)
+	sign3d.position = Vector3(-1.6, 2.08, -4.2)
+	sign3d.no_depth_test = false
+	add_child(sign3d)
 
 
-func _door() -> void:
-	_box(Vector3(0, 1.15, -4.94), Vector3(1.1, 2.3, 0.10), Color(0.40, 0.30, 0.21))
-	_box(Vector3(0, 1.15, -4.90), Vector3(1.3, 2.5, 0.05), Color(0.52, 0.48, 0.42), false)
-	# brass knob
-	_box(Vector3(0.38, 1.05, -4.86), Vector3(0.08, 0.08, 0.06), Color(0.72, 0.62, 0.34), false)
-	# a strip of hallway light under it
-	_box(Vector3(0, 0.02, -4.88), Vector3(1.0, 0.03, 0.12), Color(1.0, 0.90, 0.70), false, true)
-
-
-func _posters() -> void:
-	_box(Vector3(-3.34, 2.0, -2.2), Vector3(0.03, 0.9, 0.65), Color(0.20, 0.30, 0.42), false, true)
-	_box(Vector3(-3.32, 2.0, -2.2), Vector3(0.02, 0.75, 0.52), Color(0.60, 0.72, 0.85), false, true)
-	_box(Vector3(-3.34, 1.6, 0.2), Vector3(0.03, 0.6, 0.45), Color(0.55, 0.45, 0.28), false, true)
-	# calendar with the last week torn off
-	_box(Vector3(1.2, 1.9, -4.92), Vector3(0.55, 0.7, 0.02), Color(0.82, 0.80, 0.74), false, true)
-	_box(Vector3(1.2, 2.12, -4.90), Vector3(0.42, 0.18, 0.01), Color(0.72, 0.18, 0.16), false, true)
+func _balloons() -> void:
+	var cols: Array[Color] = [Color(0.70, 0.22, 0.24), Color(0.28, 0.42, 0.68)]
+	for i in range(2):
+		var balloon := MeshInstance3D.new()
+		var sm := SphereMesh.new()
+		sm.radius = 0.22
+		sm.height = 0.48
+		sm.radial_segments = 10
+		sm.rings = 6
+		balloon.mesh = sm
+		balloon.position = Vector3(3.3 - i * 0.5, 1.95 + i * 0.15, -4.0)
+		balloon.material_override = _mat(cols[i])
+		add_child(balloon)
+		_box(Vector3(3.3 - i * 0.5, 1.2, -4.0), Vector3(0.012, 1.2, 0.012),
+			Color(0.70, 0.68, 0.62), false)
 
 
 func _lights() -> void:
 	var we := WorldEnvironment.new()
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.20, 0.19, 0.20)
+	env.background_color = Color(0.16, 0.13, 0.14)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.62, 0.56, 0.46)
-	env.ambient_light_energy = 0.55
-	env.fog_enabled = true
-	env.fog_light_color = Color(0.55, 0.50, 0.44)
-	env.fog_density = 0.01
+	env.ambient_light_color = Color(0.58, 0.47, 0.38)
+	env.ambient_light_energy = 0.48
+	env.fog_enabled = false
 	we.environment = env
 	add_child(we)
 
-	var sun := DirectionalLight3D.new()
-	sun.light_color = Color(1.0, 0.92, 0.76)
-	sun.light_energy = 0.85
-	sun.shadow_enabled = false
-	sun.rotation_degrees = Vector3(-38, 118, 0)
-	add_child(sun)
+	# dusk through the window, no shadows
+	var dusk := DirectionalLight3D.new()
+	dusk.light_color = Color(0.86, 0.52, 0.48)
+	dusk.light_energy = 0.25
+	dusk.shadow_enabled = false
+	dusk.rotation_degrees = Vector3(-18, 70, 0)
+	add_child(dusk)
 
+	# one warm bulb over the table
 	var lamp := OmniLight3D.new()
-	lamp.light_color = Color(1.0, 0.82, 0.58)
-	lamp.light_energy = 0.8
-	lamp.omni_range = 6.0
+	lamp.light_color = Color(1.0, 0.84, 0.60)
+	lamp.light_energy = 1.05
+	lamp.omni_range = 6.5
 	lamp.shadow_enabled = false
-	lamp.position = Vector3(2.6, 1.3, -3.6)
+	lamp.position = Vector3(0, 2.4, -0.7)
 	add_child(lamp)
+	# the fixture
+	var shade := MeshInstance3D.new()
+	var cm := CylinderMesh.new()
+	cm.top_radius = 0.12
+	cm.bottom_radius = 0.30
+	cm.height = 0.22
+	cm.radial_segments = 10
+	shade.mesh = cm
+	shade.position = Vector3(0, 2.62, -0.7)
+	shade.material_override = _mat(Color(0.62, 0.52, 0.38))
+	add_child(shade)
+	_box(Vector3(0, 2.85, -0.7), Vector3(0.02, 0.35, 0.02), Color(0.20, 0.18, 0.16), false)
+
+
+# ---------------------------------------------------------------- mum
+
+func _build_mum() -> void:
+	mum = Node3D.new()
+	mum.position = MUM_POS
+	add_child(mum)
+	_collider(MUM_POS + Vector3(0, 0.9, 0), Vector3(0.55, 1.8, 0.40))
+
+	var trousers := Color(0.24, 0.26, 0.30)
+	var sweater := Color(0.58, 0.44, 0.34)
+	var apron := Color(0.78, 0.70, 0.58)
+	var skin := Color(0.82, 0.68, 0.56)
+	var hair := Color(0.28, 0.20, 0.16)
+
+	for x in [-0.12, 0.12]:
+		_part(mum, Vector3(x, 0.35, 0), Vector3(0.14, 0.7, 0.16), trousers)
+		_part(mum, Vector3(x, 0.03, 0.02), Vector3(0.16, 0.06, 0.24), Color(0.16, 0.14, 0.13))
+	_part(mum, Vector3(0, 0.74, 0), Vector3(0.56, 0.55, 0.36), Color(0.30, 0.34, 0.38))
+	_part(mum, Vector3(0, 1.15, 0), Vector3(0.48, 0.52, 0.30), sweater)
+	_part(mum, Vector3(0, 1.0, 0.16), Vector3(0.36, 0.62, 0.02), apron)
+	_part(mum, Vector3(0, 0.76, 0.17), Vector3(0.40, 0.06, 0.02), apron)
+	for x in [-0.30, 0.30]:
+		_part(mum, Vector3(x, 1.12, 0), Vector3(0.11, 0.55, 0.12), sweater)
+		_part(mum, Vector3(x, 0.85, 0.01), Vector3(0.10, 0.12, 0.11), skin)
+	_part(mum, Vector3(0, 1.46, 0), Vector3(0.14, 0.12, 0.14), skin)
+	_mum_head = _part(mum, Vector3(0, 1.62, 0), Vector3(0.28, 0.32, 0.27), skin)
+	_part(mum, Vector3(0, 1.76, -0.01), Vector3(0.31, 0.12, 0.30), hair)
+	_part(mum, Vector3(0, 1.70, -0.17), Vector3(0.16, 0.16, 0.12), hair)
+	# eyes. Kind, tired. Not a monster.
+	for x in [-0.06, 0.06]:
+		_part(mum, Vector3(x, 1.64, 0.14), Vector3(0.03, 0.03, 0.012), Color(0.16, 0.12, 0.10))
+	_part(mum, Vector3(0, 1.52, 0.14), Vector3(0.07, 0.012, 0.012), Color(0.46, 0.24, 0.22))

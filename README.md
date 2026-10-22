@@ -64,7 +64,7 @@ is free and bolting them onto a finished game is a rewrite.
 | [`docs/prologue.md`](docs/prologue.md) | **The opening twelve minutes**, beat by beat |
 | [`docs/story.md`](docs/story.md) | Canon rules, cast, continuity bible, tone rules |
 | [`docs/worlds.md`](docs/worlds.md) | Five acts — layouts, chase mechanics, scares |
-| [`docs/worlds-2-4.md`](docs/worlds-2-4.md) | **The three 30th worlds** — mushroom cave, red cave, foggy street, morning ending |
+| [`docs/worlds-2-4.md`](docs/worlds-2-4.md) | **The three 30th worlds** — mushroom cave, red cave, foggy street, birthday-party ending |
 | [`docs/art-direction.md`](docs/art-direction.md) | **How the models get made.** Pipeline, budgets, the tricks |
 | [`docs/tech-stack.md`](docs/tech-stack.md) | Engine, perf budgets, **§8 the mobile input map** |
 | [`docs/distribution.md`](docs/distribution.md) | **Where this gets published** — itch.io **and** Google Play, one build |
@@ -103,14 +103,15 @@ Full reasoning: [`docs/scope.md`](docs/scope.md)
 3. **World 2 — glowing mushroom cave** — rainbow pebbles, three crawlers.
 4. **World 3 — red cave** — three lost souls, stained rock (no gore).
 5. **World 4 — foggy street** — your house, your door, the goodbye.
-6. **The morning** — you surface in your bedroom; mum is downstairs.
+6. **The party** — you surface through the cupboard; that evening the table is
+   set for two, and you realize Wren lied about the best birthday.
 
 See [`docs/part1-playtest.md`](docs/part1-playtest.md),
 [`docs/act1-cavern.md`](docs/act1-cavern.md) and
 [`docs/worlds-2-4.md`](docs/worlds-2-4.md).
 
-Headless tests: `test_worlds` (33/33), `test_act1` (8/8), `test_dialogue`
-(11/11).
+Headless tests: `test_worlds` (35/35), `test_act1` (8/8), `test_dialogue`
+(12/12).
 
 ## Licence
 
