@@ -1,12 +1,30 @@
 extends Node
 ## Tiny audio helper for Part 1. No mixing tricks, no bus layout needed.
 ## Just plays the generated wavs. Keeps PC load at zero.
+##
+## The prologue's audio arc, in order:
+##   bedroom bed (a house at night, one band missing)
+##   the music box, in tune, in the living room  [the only warm sound]
+##   it stops mid-phrase  ->  four seconds of nothing
+##   knocks + the wardrobe starting to breathe
+##   midnight: the box returns, flat and slow
+##   the bad cheer, far away, under the title
+##
+## docs/art-direction.md §9: 70% of the fear budget is audio. This file is
+## where that budget is spent.
 
 var _knock: AudioStreamPlayer
 var _lock: AudioStreamPlayer
 var _music: AudioStreamPlayer
 var _static: AudioStreamPlayer
 var _chase: AudioStreamPlayer
+var _ambience: AudioStreamPlayer
+var _creak: AudioStreamPlayer
+var _dread: AudioStreamPlayer
+var _cheer: AudioStreamPlayer
+
+var _music_tw: Tween
+var _amb_tw: Tween
 
 
 func _ready() -> void:
@@ -16,9 +34,17 @@ func _ready() -> void:
 	_music = _mk("Music")
 	_static = _mk("Static")
 	_chase = _mk("Chase")
+	_ambience = _mk("Ambience")
+	_creak = _mk("Creak")
+	_dread = _mk("Dread")
+	_cheer = _mk("Cheer")
 	_music.volume_db = -8.0
 	_knock.volume_db = -2.0
 	_chase.volume_db = -4.0
+	_ambience.volume_db = -40.0
+	_creak.volume_db = -5.0
+	_dread.volume_db = -10.0
+	_cheer.volume_db = -16.0
 
 
 func _mk(n: String) -> AudioStreamPlayer:
@@ -35,6 +61,18 @@ func _load(path: String) -> AudioStream:
 	if ResourceLoader.exists(path):
 		return load(path) as AudioStream
 	return null
+
+
+## Loop an imported wav without touching the .import file. AudioStreamWAV
+## stores 16-bit mono, so loop_end is the byte count / 2.
+func _load_loop(path: String) -> AudioStream:
+	var s := _load(path)
+	if s is AudioStreamWAV:
+		var w := s as AudioStreamWAV
+		w.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		w.loop_begin = 0
+		w.loop_end = w.data.size() / 2
+	return s
 
 
 func play_knock(times := 3, gap := 0.28) -> void:
@@ -58,12 +96,79 @@ func play_lock() -> void:
 	_lock.play()
 
 
+## The room tone. Starts in the bedroom and runs under the whole prologue.
+## It is deliberately almost inaudible: the absence of a band is the effect.
+func play_ambience() -> void:
+	var s := _load_loop("res://assets/audio/prologue_bed.wav")
+	if s == null:
+		return
+	_ambience.stream = s
+	_ambience.volume_db = -40.0
+	_ambience.play()
+	if _amb_tw != null and _amb_tw.is_valid():
+		_amb_tw.kill()
+	_amb_tw = create_tween()
+	_amb_tw.tween_property(_ambience, "volume_db", -11.0, 4.0)
+
+
+func stop_ambience(fade := 2.0) -> void:
+	if not _ambience.playing:
+		return
+	if _amb_tw != null and _amb_tw.is_valid():
+		_amb_tw.kill()
+	_amb_tw = create_tween()
+	_amb_tw.tween_property(_ambience, "volume_db", -50.0, fade)
+	_amb_tw.tween_callback(_ambience.stop)
+
+
+## Take the room tone out for the four-second gap in Beat 4, then bring it
+## back. The silence only reads as silence if the bed goes with it.
+func duck_ambience(fade := 0.6) -> void:
+	if not _ambience.playing:
+		return
+	if _amb_tw != null and _amb_tw.is_valid():
+		_amb_tw.kill()
+	_amb_tw = create_tween()
+	_amb_tw.tween_property(_ambience, "volume_db", -42.0, fade)
+
+
+func un_duck_ambience(fade := 1.2) -> void:
+	if not _ambience.playing:
+		return
+	if _amb_tw != null and _amb_tw.is_valid():
+		_amb_tw.kill()
+	_amb_tw = create_tween()
+	_amb_tw.tween_property(_ambience, "volume_db", -11.0, fade)
+
+
+## A single wardrobe hinge. One of the few sounds that should be *close*.
+func play_creak() -> void:
+	var s := _load("res://assets/audio/wardrobe_creak.wav")
+	if s == null:
+		return
+	_creak.stream = s
+	_creak.pitch_scale = 0.92 + randf() * 0.1
+	_creak.play()
+
+
+## Something in the room changes. Rising, unresolved, cut before it lands.
+func play_dread() -> void:
+	var s := _load("res://assets/audio/dread_rise.wav")
+	if s == null:
+		return
+	_dread.stream = s
+	_dread.play()
+
+
 func play_musicbox_30th() -> void:
 	var s := _load("res://assets/audio/music_box_30th.wav")
 	if s == null:
 		return
+	if _music_tw != null and _music_tw.is_valid():
+		_music_tw.kill()
 	_music.stream = s
-	_music.pitch_scale = 1.0
+	_music.pitch_scale = 0.97
+	_music.volume_db = -9.0
 	_music.play()
 
 
@@ -71,13 +176,35 @@ func play_musicbox_real() -> void:
 	var s := _load("res://assets/audio/music_box_realmotif.wav")
 	if s == null:
 		return
+	if _music_tw != null and _music_tw.is_valid():
+		_music_tw.kill()
 	_music.stream = s
 	_music.pitch_scale = 1.0
+	_music.volume_db = -7.0
 	_music.play()
 
 
-func stop_music() -> void:
-	_music.stop()
+func stop_music(fade := 0.0) -> void:
+	if _music_tw != null and _music_tw.is_valid():
+		_music_tw.kill()
+	if fade <= 0.0:
+		_music.stop()
+		return
+	_music_tw = create_tween()
+	_music_tw.tween_property(_music, "volume_db", -45.0, fade)
+	_music_tw.tween_callback(_music.stop)
+
+
+## The bad cheer: a party played slightly out of time with itself.
+## docs/art-direction.md §10 calls it the most important cue in the game.
+func play_bad_cheer(far := true) -> void:
+	var s := _load("res://assets/audio/bad_cheer_far.wav" if far
+		else "res://assets/audio/bad_cheer_near.wav")
+	if s == null:
+		return
+	_cheer.stream = s
+	_cheer.volume_db = -20.0 if far else -6.0
+	_cheer.play()
 
 
 ## Cheap scare sting: knock pitched way down + short music stop.

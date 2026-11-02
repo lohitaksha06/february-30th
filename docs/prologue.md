@@ -55,7 +55,7 @@ Pick. Fade to black. Fade up.
 
 ---
 
-### BEAT 1 — 11:48 PM
+### BEAT 1 — 11:59 PM
 
 You wake up. First-person, lying down. The camera is at pillow height.
 
@@ -63,13 +63,13 @@ You wake up. First-person, lying down. The camera is at pillow height.
 the only light source in the game for the first three minutes. It shifts
 slightly as if a car is passing outside. It never fully goes away.
 
-A digital clock on the nightstand reads **11:48**.
+A digital clock on the nightstand reads **11:59**.
 
 Sitting up takes one keypress. The player does this within two seconds of
 starting. Everyone does.
 
-**No music. No ambience yet.** Room tone only — a house at night. A fridge
-somewhere. Something settling.
+**No music. Room tone only** — a low house bed with one band missing, a fridge
+somewhere, something settling. The absence is the part that registers.
 
 ---
 
@@ -101,7 +101,7 @@ photograph it. They will walk around the room. Let them.
 
 ### BEAT 3 — back to bed
 
-The clock reads **11:52**.
+The clock still reads **11:59**. It has not moved.
 
 You go back. Under the covers. The camera returns to pillow height and the
 streetlight is doing its slow shift across the ceiling.
@@ -192,20 +192,14 @@ to be kind to something they do not understand.
 | **"There's no thirtieth."** | *"What do you mean?"* · *"Are you in my cupboard?"* · *"Are you OK?"* | they explain it the way a child explains something adult and slightly wrong |
 | **"What do you mean?"** | *"It's my birthday."* · *"Don't you know the date?"* · *[say nothing]* | they say the date again, softer |
 | **"Are you in my cupboard?"** | *"I live in here."* · *"It's warm in here."* · *"You have a bed."* | they look at the bed. they do not want it |
-| **"Are you OK?"** | *[offer help]* · *"Do you want me to get mum?"* | this one has a sting — see below |
+| **"Are you OK?"** | *"I'll stay."* · *"I won't leave you."* | they ask you not to let them be found |
 
-**On "Do you want me to get mum?":**
+**Every branch converges on the same plea:**
 
-> *"No."*
->
-> *"Please don't get her."*
+> *"Please don't let them find me."*
 
-Then, immediately:
-
-> *"Please don't."*
-
-**That is the first thing the game tells you about your mother**, and it is
-delivered by a child in a cupboard. Do not explain it.
+The player is not asked where the child's parents are, and the child never
+mentions them. The only thing they ask for is to be hidden.
 
 ### The player forgets their birthday
 
@@ -273,11 +267,16 @@ title.
 - **~12 minutes**, no fail states, no combat, nothing chasing the player
 - **Four rooms, one floor** — see `tech-stack.md` §7 for why this is also the
   performance strategy
-- **Two light sources total:** the streetlight (a single animated directional
-  light) and the flashlight
+- **One shadow map in the whole game**, owned by the flashlight. The
+  streetlight, practicals and candle flames cast no shadows
+  (`art-direction.md` §7 allows exactly one, for the torch)
+- **Colour is the room sign**: dusty blue bedroom, amber hall, peach birthday
+  room, sick green kitchen. The warm rooms are safe. The cold ones are not
 - **The entire prologue is under 300 KB** of assets
 - **The streetlight never turns off.** It is the last warm-neutral thing in the
   game and it is gone in Act I
+- **The music box is the only warm sound.** In tune in the living room; flat
+  and slower after midnight; gone in Act I
 - **Everything after Beat 9 must honour the framing.** No monster in this game
   is ever scary on its own — every one of them was forgotten. That is the promise
   the prologue makes, and the game spends the next five hours cashing.

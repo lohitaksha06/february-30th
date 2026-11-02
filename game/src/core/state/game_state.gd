@@ -12,6 +12,11 @@ var finished: bool = false
 
 var gender: String = "boy"  # set by character select, Wren copies it
 
+## Settings. These are deliberately NOT reset by reset_prologue(): a player
+## who turns the sensitivity down should not have to do it again on replay.
+var mouse_sensitivity: float = 1.0
+var master_volume: float = 0.8
+
 
 func reset_prologue() -> void:
 	in_bed = true

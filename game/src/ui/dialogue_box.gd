@@ -37,10 +37,13 @@ var _typing := false
 var _full := ""
 var _shown := 0.0
 var _buttons: Array[Button] = []
+var _mouse_was_captured := false
 
 
 func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Pausable on purpose: when the ESC settings overlay opens, the box must
+	# stop typing and stop eating E presses behind the menu.
+	process_mode = Node.PROCESS_MODE_PAUSABLE
 	# The box is authored in 1280x720 UI units. The game's canvas base is
 	# 320x180, so scale it by 0.25: a 660-wide panel becomes 165 px on the
 	# 320-wide screen and text stays legible at the 1280x720 window.
@@ -124,12 +127,12 @@ func show_lines(speaker: String, lines: Array) -> void:
 
 ## A spoken line followed by options. Emits option_chosen(index).
 func show_choice(speaker: String, line: String, options: Array) -> void:
-	_panel.offset_top = -210.0  # room for the option buttons
 	_lines = [line]
 	_line_i = 0
 	_choices.clear()
 	for o in options:
 		_choices.append(str(o))
+	_fit_panel(_choices.size())
 	_choosing = false
 	_pending_choices = true
 	_set_speaker(speaker)
@@ -146,6 +149,32 @@ func close() -> void:
 	_lines.clear()
 	_choices.clear()
 	_clear_options()
+	_restore_mouse()
+
+
+## True while the option list is on screen. Scenes use this to decide whether
+## regaining window focus should recapture the mouse.
+func is_choosing() -> bool:
+	return visible and _choosing
+
+
+## Grow the panel upward for 3 or 4 options. The old fixed 210 units fitted
+## two buttons; four overflowed the bottom of the screen (found in playtest).
+func _fit_panel(option_count: int) -> void:
+	var extra := maxi(0, option_count - 2)
+	_panel.offset_top = -210.0 - 26.0 * float(extra)
+
+
+func _release_mouse_for_click() -> void:
+	_mouse_was_captured = Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	if _mouse_was_captured:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+func _restore_mouse() -> void:
+	if _mouse_was_captured:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		_mouse_was_captured = false
 
 
 # ---------------------------------------------------------------- internals
@@ -209,6 +238,10 @@ func _show_options() -> void:
 	_choosing = true
 	_pending_choices = false
 	_clear_options()
+	_fit_panel(_choices.size())
+	# Free the cursor so the four choices can be clicked directly. The
+	# keyboard path (W/S + E) still works if the player prefers it.
+	_release_mouse_for_click()
 	_hint.text = "W/S  ▸  E / click"
 	for i in range(_choices.size()):
 		var b := Button.new()
@@ -259,6 +292,7 @@ func _pick(i: int) -> void:
 	_choosing = false
 	visible = false
 	_clear_options()
+	_restore_mouse()
 	option_chosen.emit(i)
 
 
@@ -266,7 +300,10 @@ func _input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():
-		var k: int = (event as InputEventKey).physical_keycode
+		var ke := event as InputEventKey
+		var k: int = ke.physical_keycode
+		if k == 0:
+			k = ke.keycode
 		if k == KEY_W or k == KEY_UP:
 			_set_sel((_sel - 1 + _buttons.size()) % maxi(1, _buttons.size()))
 			get_viewport().set_input_as_handled()

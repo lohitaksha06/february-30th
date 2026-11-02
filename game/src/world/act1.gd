@@ -168,6 +168,12 @@ func _build_ui() -> void:
 	_card_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_card.add_child(_card_label)
 
+	# ESC settings, self-contained. Works through the caught freeze because
+	# the menu itself processes always.
+	var pause := PauseMenu.new()
+	pause.name = "PauseMenu"
+	_ui.add_child(pause)
+
 	_fade = ColorRect.new()
 	_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fade.color = Color(0, 0, 0, 1)

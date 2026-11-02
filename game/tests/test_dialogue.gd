@@ -49,6 +49,22 @@ func _ready() -> void:
 	_check("box_emits_option", picked[0] == 1)
 	_check("box_closes_after_pick", not box.visible)
 
+	# Four options must fit inside the 320x180 canvas. The old fixed-height
+	# panel clipped the fourth button off the bottom of the screen.
+	box.show_choice("WREN", "four options?", ["one", "two", "three", "four"])
+	await _wait(0.1)
+	var g4 := 0
+	while box._buttons.size() < 4 and g4 < 40:
+		g4 += 1
+		await _wait(0.05)
+	var r4: Rect2 = box._panel.get_global_rect()
+	_check("box_four_options_shown", box._buttons.size() == 4)
+	_check("box_four_options_fit",
+		r4.position.y >= -0.5 and r4.end.y <= 180.5)
+	box._advance()
+	await get_tree().process_frame
+	_check("box_closes_after_four", not box.visible)
+
 	# Line-only box: E through every line, then line_finished.
 	var done := [false]
 	box.line_finished.connect(func(): done[0] = true)
@@ -93,8 +109,13 @@ func _ready() -> void:
 			terminates = false
 			print("  possible loop at ", id)
 	_check("tree_terminates", terminates)
-	_check("tree_has_mum_sting", tree.has("mumsting"))
-	_check("tree_sting_three_lines", (tree["mumsting"]["lines"] as Array).size() == 3)
+	# The parent branch was removed on purpose: the player never offers to
+	# fetch mum and never asks where Wren's parents are.
+	_check("tree_has_no_mum_sting", not tree.has("mumsting"))
+	var flat := str(tree).to_lower()
+	_check("tree_has_no_parent_questions",
+		flat.find("mum") == -1 and flat.find("parent") == -1)
+	_check("tree_has_stay_branch", tree.has("stay"))
 
 	print("SMOKE %s (%d fails)" % ["PASS" if _fails == 0 else "FAIL", _fails])
 	get_tree().quit(_fails)

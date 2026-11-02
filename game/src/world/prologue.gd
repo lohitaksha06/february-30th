@@ -3,13 +3,20 @@ extends Node3D
 ## docs/prologue.md beats 1,4,6,8,9 compressed to ~6 minutes. No enemies.
 ## Everything is script-driven. Player only walks / looks / presses E.
 
-enum S { SELECT, LYING, SITUP, EXPLORE, KNOCK, DOOR_OPEN, TALK, MOM, FALL, TITLE }
+enum S { SELECT, LYING, SITUP, CLOCK, LIVING, EXPLORE, KNOCK, DOOR_OPEN, TALK, MOM, FALL, TITLE }
 
 var state: int = S.SELECT
 var _t := 0.0
 var _knock_done := false
 var _mom_timer := 0.0
 var _push_window := 0.0
+var _wake_ready := false
+var _clock_done := false
+var _seen_cake := false
+var _knock_ready := false
+var _title_t := 0.0
+var _going := false
+var _mouse_free := true
 
 @onready var player: CharacterBody3D = $Player
 @onready var wren: Node3D = $Wren
@@ -22,21 +29,32 @@ var _prompt: Label
 var _hud_clock: Label
 var _flash: ColorRect
 var _title: CenterContainer
+var _title_bg: ColorRect
 var _title_label: Label
+var _title_sub: Label
+var _title_prompt: Label
 var _choice_box: VBoxContainer
+var _select_title: Label
+var _select_sub: Label
 var _dlg: DialogueBox
+var _pause: PauseMenu
 
 var _cam: Camera3D
-var _door: MeshInstance3D
+var _door: Node3D
 var _streetlight: DirectionalLight3D
+var _house: Node3D
 var _tunnel: Node3D
 var _shake := 0.0
+var _fade_tw: Tween
 
 
 func _ready() -> void:
 	GameState.reset_prologue()
-	Clock.set_time(11, 48)
+	# 11:59, not 11:48: the first thing the child says is "one more minute".
+	Clock.set_time(11, 59)
+	clock3d.text = "11:59"
 	_cam = player.get_node("Head/Camera3D") as Camera3D
+	_house = get_node("House") as Node3D
 	_find_door()
 	_find_streetlight()
 	_build_ui()
@@ -47,9 +65,9 @@ func _ready() -> void:
 # ---------------------------------------------------------------- setup
 
 func _find_door() -> void:
-	_door = get_node_or_null("House/WardrobeDoor") as MeshInstance3D
+	_door = get_node_or_null("House/WardrobeDoor") as Node3D
 	if _door == null:
-		_door = _search(get_node("House"), "WardrobeDoor") as MeshInstance3D
+		_door = _search(get_node("House"), "WardrobeDoor") as Node3D
 
 
 func _search(n: Node, target: String) -> Node:
@@ -120,34 +138,36 @@ func _build_ui() -> void:
 
 	_hud_clock = Label.new()
 	_hud_clock.name = "ClockHUD"
-	_hud_clock.text = "FEB 29  11:48"
-	_hud_clock.add_theme_font_size_override("font_size", 13)
+	_hud_clock.text = "FEB 29  11:59"
+	_hud_clock.add_theme_font_size_override("font_size", 6)
 	_hud_clock.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0, 0.85))
 	_hud_clock.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_hud_clock.position = Vector2(12, 8)
+	_hud_clock.position = Vector2(6, 4)
 	_ui.add_child(_hud_clock)
 
+	# Text sizes are in the 320x180 canvas base. The old 13/16/14 sizes were
+	# magnified 4x to 52/64/56 px on a 720p window -- enormous.
 	_sub = Label.new()
 	_sub.name = "Subtitle"
-	_sub.add_theme_font_size_override("font_size", 16)
+	_sub.add_theme_font_size_override("font_size", 7)
 	_sub.add_theme_color_override("font_color", Color(0.92, 0.92, 0.90))
 	_sub.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 	_sub.add_theme_constant_override("shadow_offset_x", 1)
 	_sub.add_theme_constant_override("shadow_offset_y", 2)
 	_sub.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_sub.position = Vector2(-300, -70)
-	_sub.size = Vector2(600, 60)
+	_sub.position = Vector2(-150, -56)
+	_sub.size = Vector2(300, 38)
 	_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_ui.add_child(_sub)
 
 	_prompt = Label.new()
 	_prompt.name = "Prompt"
-	_prompt.add_theme_font_size_override("font_size", 14)
-	_prompt.add_theme_color_override("font_color", Color(1, 1, 1, 0.75))
+	_prompt.add_theme_font_size_override("font_size", 6)
+	_prompt.add_theme_color_override("font_color", Color(1, 1, 1, 0.78))
 	_prompt.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_prompt.position = Vector2(-300, -34)
-	_prompt.size = Vector2(600, 24)
+	_prompt.position = Vector2(-150, -28)
+	_prompt.size = Vector2(300, 18)
 	_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_ui.add_child(_prompt)
 
@@ -184,20 +204,88 @@ func _build_ui() -> void:
 	# choice buttons (boy / girl)
 	_choice_box = VBoxContainer.new()
 	_choice_box.set_anchors_preset(Control.PRESET_CENTER)
-	_choice_box.position = Vector2(-90, -40)
-	_choice_box.add_theme_constant_override("separation", 10)
+	_choice_box.position = Vector2(-45, -32)
+	_choice_box.add_theme_constant_override("separation", 6)
 	_ui.add_child(_choice_box)
 
-	# title card (hidden)
+	# Title lockup on the character-select screen. This is the first thing the
+	# player sees, so it gets to look like the box art rather than a debug menu.
+	_select_title = Label.new()
+	_select_title.name = "SelectTitle"
+	_select_title.text = "FEBRUARY 30th"
+	_select_title.add_theme_font_size_override("font_size", 19)
+	_select_title.add_theme_color_override("font_color", Color(0.80, 0.08, 0.09))
+	_select_title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+	_select_title.add_theme_constant_override("shadow_offset_x", 1)
+	_select_title.add_theme_constant_override("shadow_offset_y", 2)
+	_select_title.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_select_title.position = Vector2(-150, 14)
+	_select_title.size = Vector2(300, 26)
+	_select_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ui.add_child(_select_title)
+
+	_select_sub = Label.new()
+	_select_sub.name = "SelectSub"
+	_select_sub.text = "the day after your birthday"
+	_select_sub.add_theme_font_size_override("font_size", 6)
+	_select_sub.add_theme_color_override("font_color", Color(0.66, 0.68, 0.72))
+	_select_sub.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_select_sub.position = Vector2(-150, 38)
+	_select_sub.size = Vector2(300, 12)
+	_select_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ui.add_child(_select_sub)
+
+	# title card (hidden). This is the post-fall card that leads into Act 1,
+	# so it has to look like a chapter break, not the end of the game.
+	# The black backdrop is a UI rect, not a hidden 3D world: hiding the
+	# WorldEnvironment mid-frame crashed the GL capture and gained nothing.
+	_title_bg = ColorRect.new()
+	_title_bg.name = "TitleBg"
+	_title_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_title_bg.color = Color(0.0, 0.0, 0.0, 1.0)
+	_title_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_title_bg.visible = false
+	_ui.add_child(_title_bg)
+
 	_title = CenterContainer.new()
 	_title.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_title.visible = false
 	_ui.add_child(_title)
+	var title_col := VBoxContainer.new()
+	title_col.add_theme_constant_override("separation", 10)
+	title_col.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_title.add_child(title_col)
 	_title_label = Label.new()
-	_title_label.add_theme_font_size_override("font_size", 42)
+	_title_label.add_theme_font_size_override("font_size", 24)
 	_title_label.add_theme_color_override("font_color", Color(0.88, 0.10, 0.10))
+	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_title_label.text = "FEBRUARY 30th"
-	_title.add_child(_title_label)
+	title_col.add_child(_title_label)
+	_title_sub = Label.new()
+	_title_sub.add_theme_font_size_override("font_size", 8)
+	_title_sub.add_theme_color_override("font_color", Color(0.82, 0.84, 0.88))
+	_title_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_title_sub.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_title_sub.text = "ACT I — THE CAVERN"
+	title_col.add_child(_title_sub)
+
+	# The prompt needs to live inside the title column: the black title
+	# backdrop is drawn above the HUD prompt, so the old label was hidden.
+	_title_prompt = Label.new()
+	_title_prompt.add_theme_font_size_override("font_size", 7)
+	_title_prompt.add_theme_color_override("font_color", Color(0.64, 0.66, 0.70))
+	_title_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_title_prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_title_prompt.text = "[ENTER] continue        [R] replay"
+	title_col.add_child(_title_prompt)
+
+	# ESC settings. Added above the dialogue box and below the fade.
+	_pause = PauseMenu.new()
+	_pause.name = "PauseMenu"
+	_ui.add_child(_pause)
 
 	# fade (top-most)
 	_fade = ColorRect.new()
@@ -217,8 +305,12 @@ func _say(text: String, dur := 3.0) -> void:
 
 
 func _fade_to(alpha: float, dur := 1.0) -> void:
-	var tw := create_tween()
-	tw.tween_property(_fade, "color:a", alpha, dur)
+	# Kill the previous fade. Without this, the character-select fade-out and
+	# the slow wake fade fight over the same property and the wake-in is lost.
+	if _fade_tw != null and _fade_tw.is_valid():
+		_fade_tw.kill()
+	_fade_tw = create_tween()
+	_fade_tw.tween_property(_fade, "color:a", alpha, dur)
 
 
 # ---------------------------------------------------------------- beats
@@ -226,28 +318,80 @@ func _fade_to(alpha: float, dur := 1.0) -> void:
 func _start_select() -> void:
 	state = S.SELECT
 	player.can_move = false
+	# The buttons need a cursor. Nothing used to switch the mouse back on
+	# after this screen, so mouse-look was dead for the whole prologue.
+	_mouse_free = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_fade.color.a = 1.0
-	_fade_to(1.0, 0.01)
-	_say("FEBRUARY 29th.", 2.5)
+	_fade_to(0.0, 1.5)
+	_select_title.visible = true
+	_select_sub.visible = true
+	_select_sub.text = "FEBRUARY 29th, 11:59 PM   ·   the day after your birthday"
+	if not _select_title.has_meta("pulsing"):
+		_select_title.set_meta("pulsing", true)
+		var pulse := _select_title.create_tween().set_loops()
+		pulse.tween_property(_select_title, "modulate:a", 0.62, 1.6)
+		pulse.tween_property(_select_title, "modulate:a", 1.0, 1.6)
 	for c in _choice_box.get_children():
 		c.queue_free()
+	_choice_box.visible = true
 	var l := Label.new()
 	l.text = "who are you?"
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.add_theme_font_size_override("font_size", 8)
 	_choice_box.add_child(l)
+	var first: Button = null
 	for g in ["boy", "girl"]:
 		var b := Button.new()
 		b.text = g.to_upper()
-		b.custom_minimum_size = Vector2(180, 36)
+		b.custom_minimum_size = Vector2(104, 20)
+		b.add_theme_font_size_override("font_size", 6)
+		_style_choice_button(b)
 		b.pressed.connect(_on_pick.bind(g))
 		_choice_box.add_child(b)
-	_fade_to(0.0, 1.5)
+		if first == null:
+			first = b
+	if first != null:
+		first.grab_focus()
+
+
+## The default engine button theme is grey and modern. This is a VHS-era
+## menu: near-black, thin red keyline, pale type.
+func _style_choice_button(b: Button) -> void:
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.045, 0.035, 0.040, 0.94)
+	normal.border_color = Color(0.34, 0.09, 0.10)
+	normal.set_border_width_all(1)
+	normal.content_margin_left = 10
+	normal.content_margin_right = 10
+	normal.content_margin_top = 5
+	normal.content_margin_bottom = 5
+
+	var hover := normal.duplicate() as StyleBoxFlat
+	hover.bg_color = Color(0.13, 0.045, 0.050, 0.96)
+	hover.border_color = Color(0.72, 0.16, 0.16)
+
+	var focus := hover.duplicate() as StyleBoxFlat
+	focus.border_color = Color(0.92, 0.72, 0.44)
+	focus.set_border_width_all(2)
+
+	b.add_theme_stylebox_override("normal", normal)
+	b.add_theme_stylebox_override("hover", hover)
+	b.add_theme_stylebox_override("pressed", hover)
+	b.add_theme_stylebox_override("focus", focus)
+	b.add_theme_color_override("font_color", Color(0.86, 0.82, 0.76))
+	b.add_theme_color_override("font_hover_color", Color(1.0, 0.90, 0.80))
+	b.add_theme_color_override("font_focus_color", Color(1.0, 0.90, 0.80))
 
 
 func _on_pick(g: String) -> void:
 	if state != S.SELECT:
 		return
 	GameState.gender = g
+	_mouse_free = false
+	_select_title.visible = false
+	_select_sub.visible = false
+	player.capture_mouse()
 	for c in _choice_box.get_children():
 		c.queue_free()
 	_choice_box.visible = false
@@ -256,29 +400,99 @@ func _on_pick(g: String) -> void:
 
 func _start_lying() -> void:
 	state = S.LYING
-	# lying in bed: eye at pillow height, staring at ceiling
-	player.teleport(0.85, 0.78, 2.55, 2.6)
+	# Hold the body before moving it: gravity would otherwise drop the capsule
+	# to the floor during the fade-in, so the "lying down" shot was lost.
+	player.set_physics_process(false)
+	# Lying in bed: the camera rides 1.62 m above the body origin, so lower
+	# the origin until the eye sits just above the mattress. (The old 0.78
+	# put the eye at 2.4 m, almost touching the 2.6 m ceiling.)
+	player.teleport(0.85, -0.55, 3.05, -0.15)
 	player.can_move = false
-	(player.get_node("Head") as Node3D).rotation.x = -0.9  # looking up
-	_fade_to(0.0, 2.0)
-	_say("11:48 PM. The streetlight moves across the ceiling.", 4.0)
+	# Positive pitch looks UP in Godot (the old -1.02 was pitched at the bed,
+	# which is why the first shot was a flat blue slab). Head on the pillow,
+	# eye just above the mattress, ceiling and window in frame.
+	player.set_pitch(0.62)
+	_wake_ready = false
+	_fade.color.a = 1.0
+	_fade_to(0.0, 3.2)  # slow wake
+	Clock.set_time(11, 59)
+	clock3d.text = "11:59"
+	AudioDirector.play_ambience()
+	_say("You are awake. The ceiling. The streetlight moving across it.", 5.0)
+	await get_tree().create_timer(3.6).timeout
+	if state != S.LYING:
+		return
+	_wake_ready = true
 	_prompt.text = "[E] sit up"
-	await get_tree().create_timer(1.0).timeout
-	Clock.set_time(11, 48)
 
 
 func _sit_up() -> void:
+	if state != S.LYING or not _wake_ready:
+		return
 	state = S.SITUP
 	_prompt.text = ""
 	GameState.sat_up = true
-	player.teleport(1.75, 0.1, 2.1, -1.9)
-	(player.get_node("Head") as Node3D).rotation.x = 0.0
+	player.can_move = false
+	# Sit up in place first. The old version snapped the eye and the body to a
+	# standing spot in one frame, which read as a bug rather than waking up.
+	# Mouse look is off for the tween so it cannot fight the animation.
+	player.set_process_unhandled_input(false)
+	var head := player.get_node("Head") as Node3D
+	var tw := create_tween()
+	tw.tween_property(head, "rotation:x", 0.0, 1.4).set_trans(Tween.TRANS_SINE)
+	await get_tree().create_timer(1.5).timeout
+	player.set_pitch(0.0)
+	_fade_to(0.85, 0.45)
+	await get_tree().create_timer(0.5).timeout
+	player.teleport(1.75, 0.1, 1.35, -1.9)
+	player.set_physics_process(true)
+	player.set_process_unhandled_input(true)
+	_fade_to(0.0, 0.8)
+	# The torch is yours from here. It is the only shadow map in the game,
+	# and it is what makes the hallway read as depth instead of paint.
+	player.set_flashlight(true)
+	# Turn the player toward the clock. The old version told them to look at
+	# it while the camera still faced the doorway, which read as a bug.
+	player.look_at_point(clock3d.global_position)
+	await get_tree().create_timer(0.55).timeout
 	player.can_move = true
+	state = S.CLOCK
+	_prompt.text = "[E] check the clock"
+	_say("The clock is still on. Look at it.", 4.0)
+
+
+func _check_clock() -> void:
+	if state != S.CLOCK or _clock_done:
+		return
+	_clock_done = true
+	_prompt.text = ""
+	player.look_at_point(clock3d.global_position)
+	Clock.set_time(11, 59)
+	clock3d.text = "11:59"
+	_say("11:59. One more minute till my birthday.", 4.5)
+	await get_tree().create_timer(3.2).timeout
+	if state != S.CLOCK:
+		return
+	state = S.LIVING
+	_say("Mum left the cake out. Eleven candles.", 4.0)
+
+
+func _see_cake() -> void:
+	if _seen_cake:
+		return
+	_seen_cake = true
+	_prompt.text = ""
+	player.look_at_point(Vector3(6.9, 0.95, 1.6))
+	# The music box starts here, in the living room, in tune. docs/prologue.md
+	# Beat 2: it is the only genuinely warm sound in the game.
 	AudioDirector.play_musicbox_real()
-	_say("Cake in the living room. Eleven candles. Go look — then come back to bed.", 5.0)
-	clock3d.text = "11:48"
+	_say("Eleven candles. One for every year.", 4.0)
+	await get_tree().create_timer(2.4).timeout
+	if state != S.LIVING:
+		return
 	state = S.EXPLORE
 	_t = 0.0
+	_prompt.text = "go back to your room — the wardrobe  [WASD]   [F] torch"
 
 
 func _process(delta: float) -> void:
@@ -286,19 +500,42 @@ func _process(delta: float) -> void:
 	_tick_clock_hud()
 	_flicker(delta)
 
-	if state == S.LYING and Input.is_action_just_pressed("interact"):
+	if state == S.LYING and _wake_ready and Input.is_action_just_pressed("interact"):
 		_sit_up()
 
+	if state == S.CLOCK and not _clock_done:
+		_prompt.text = "[E] check the clock"
+		if Input.is_action_just_pressed("interact"):
+			_check_clock()
+
+	if state == S.LIVING and not _seen_cake:
+		_prompt.text = "the cake is in the living room  [WASD walk]"
+		if player.global_position.distance_to(Vector3(6.9, 0.0, 1.6)) < 2.4:
+			_see_cake()
+
 	if state == S.EXPLORE:
-		_prompt.text = "find the wardrobe  [WASD walk · mouse look · F torch]"
-		# after ~30s (or player near wardrobe) -> knocks
-		var near := player.global_position.distance_to(Vector3(3.0, 0.0, 0.8)) < 2.2
-		if _t > 30.0 or (_t > 8.0 and near):
+		_prompt.text = "go back to your room — the wardrobe  [WASD]   [F] torch"
+		var near := player.global_position.distance_to(Vector3(3.0, 0.0, 0.9)) < 2.4
+		if _t > 12.0 or (_t > 4.0 and near):
 			_start_knocks()
-		_check_wardrobe_early()
 
 	if state == S.KNOCK:
-		_check_wardrobe_early()
+		if _knock_ready:
+			_prompt.text = "[E] open the wardrobe"
+			_check_wardrobe_early()
+
+	if state == S.TITLE:
+		_title_t += delta
+		# Never leave a player staring at what looks like an end card: if they
+		# do not press a key, Act 1 starts on its own.
+		if _title_t > 10.0:
+			_go_cavern()
+
+	# Safety net: if any collision gap still lets the player out of the house,
+	# put them back on the floor instead of ending the run.
+	if player.global_position.y < -2.0 and state not in [S.SELECT, S.FALL, S.TITLE]:
+		player.teleport(1.75, 0.1, 1.35, -1.9)
+		_say("...the floor is still there. You are still here.", 2.5)
 
 	# Beat 7 is handled by DialogueBox, which owns its own input while open.
 	# The prologue must not also react to E here or every press would double.
@@ -321,16 +558,12 @@ func _process(delta: float) -> void:
 
 
 func _tick_clock_hud() -> void:
-	if state in [S.SELECT, S.LYING]:
-		_hud_clock.text = "FEB 29  11:48"
-	elif state == S.EXPLORE:
-		_hud_clock.text = "FEB 29  11:5%d" % int(min(_t / 10.0, 2.0))
-	elif state == S.KNOCK:
-		_hud_clock.text = "FEB 29  11:59"
-	elif state in [S.DOOR_OPEN, S.TALK]:
-		_hud_clock.text = "FEB 29  11:59"
-	elif state == S.MOM:
+	if state == S.MOM:
 		_hud_clock.text = "FEB 30  12:00"
+	elif state in [S.FALL, S.TITLE]:
+		_hud_clock.text = ""
+	else:
+		_hud_clock.text = "FEB 29  11:59"
 
 
 func _flicker(_d: float) -> void:
@@ -346,17 +579,36 @@ func _start_knocks() -> void:
 		return
 	_knock_done = true
 	state = S.KNOCK
+	_knock_ready = false
 	GameState.heard_knock = true
 	Clock.set_time(11, 59)
+	# The music box stops mid-phrase, and the house has four seconds of
+	# nothing in it. That gap is the scare; docs/prologue.md Beat 4.
 	AudioDirector.stop_music()
+	AudioDirector.duck_ambience(0.6)
+	_say("", 0.1)
+	await get_tree().create_timer(4.0).timeout
+	if state != S.KNOCK:
+		return
+	AudioDirector.un_duck_ambience(1.2)
+	# The door is not flush. It is moving very slightly.
+	_house_call("set_wardrobe_dread", true)
+	AudioDirector.play_creak()
 	_say("...shff. shff. shff.  (from the wardrobe)", 3.0)
 	await get_tree().create_timer(3.2).timeout
 	if state != S.KNOCK:
 		return
+	AudioDirector.play_dread()
 	AudioDirector.play_knock(3, 0.3)
 	_say("knock. knock. knock.   ...   knock. knock. knock.", 4.0)
+	_knock_ready = true
 	_prompt.text = "[E] open the wardrobe"
-	player.look_at_point(Vector3(3.0, 1.3, 0.55))
+	player.look_at_point(Vector3(3.0, 1.3, 0.9))
+
+
+func _house_call(method: String, arg: Variant) -> void:
+	if _house != null and _house.has_method(method):
+		_house.call(method, arg)
 
 
 func _check_wardrobe_early() -> void:
@@ -377,10 +629,12 @@ func _check_wardrobe_early() -> void:
 func _open_wardrobe() -> void:
 	state = S.DOOR_OPEN
 	_prompt.text = ""
-	# swing door open
+	_house_call("set_wardrobe_dread", false)
+	AudioDirector.play_creak()
+	# swing door open, toward the east wall so it never crosses the shot
 	if _door != null:
 		var tw := create_tween()
-		tw.tween_property(_door, "rotation:y", -1.9, 0.7).set_trans(Tween.TRANS_QUAD)
+		tw.tween_property(_door, "rotation:y", 1.45, 0.7).set_trans(Tween.TRANS_QUAD)
 	await get_tree().create_timer(0.55).timeout
 	_jumpscare()
 	await get_tree().create_timer(0.45).timeout
@@ -406,7 +660,10 @@ func _reveal_wren() -> void:
 	GameState.met_wren = true
 	state = S.TALK
 	player.can_move = false
-	player.look_at_point(Vector3(3.0, 0.55, 0.55))
+	# Wren now stands in front of the wardrobe instead of inside its solid
+	# mesh, where the player could hear them but never see them.
+	# look at the face, not the chest; the hat then does not hide the eyes
+	player.look_at_point(Vector3(3.0, 0.72, 1.15))
 	_prompt.text = ""
 	_run_node("start")
 
@@ -423,15 +680,15 @@ func _reveal_wren() -> void:
 const _DLG := {
 	"start": {
 		"speaker": "WREN",
-		"lines": ["It's my birthday too.", "It's the thirtieth."],
+		"lines": ["It's my birthday too.", "It's the 30th of February."],
 		"prompt": "",
-		"options": ["There's no thirtieth.", "What do you mean?",
+		"options": ["There's no 30th of February.", "What do you mean?",
 			"Are you in my cupboard?", "Are you OK?"],
 		"next": ["no30", "mean", "cupboard", "ok"],
 	},
 	"no30": {
 		"speaker": "WREN",
-		"lines": ["There is. It comes after the twenty-ninth.",
+		"lines": ["There is. It comes after the 29th.",
 			"You just have to stay awake for it."],
 		"prompt": "",
 		"options": ["That's not how dates work.", "Are you OK?"],
@@ -446,8 +703,8 @@ const _DLG := {
 	},
 	"mean": {
 		"speaker": "WREN",
-		"lines": ["The date. The one after the twenty-ninth.",
-			"It's mine. It's the thirtieth."],
+		"lines": ["The date. The one after the 29th.",
+			"It's mine. It's the 30th of February."],
 		"prompt": "",
 		"options": ["It's my birthday.", "Don't you know your birthday?",
 			"(say nothing)"],
@@ -493,16 +750,18 @@ const _DLG := {
 		"lines": ["That's alright.", "I'm good at waiting."],
 		"next": "ok",
 	},
+	# No parent branch. The old "Do you want me to get mum?" option and its
+	# sting are gone: the player never asks where Wren's parents are.
 	"ok": {
 		"speaker": "WREN",
-		"lines": ["No.", "Please don't get her."],
+		"lines": ["You're not going to leave?", "It's cold in here."],
 		"prompt": "",
-		"options": ["Do you want me to get mum?", "I won't get her."],
-		"next": ["mumsting", "promise"],
+		"options": ["I'll stay.", "I won't leave you."],
+		"next": ["stay", "promise"],
 	},
-	"mumsting": {
+	"stay": {
 		"speaker": "WREN",
-		"lines": ["No.", "Please don't get her.", "Please don't."],
+		"lines": ["...okay.", "Don't let them find me."],
 		"next": "end",
 	},
 	"promise": {
@@ -571,12 +830,16 @@ func validate_dialogue_tree() -> Array:
 
 func _start_mom() -> void:
 	state = S.MOM
+	# The warm house goes out. Only the streetlight and the line under her
+	# door are left, and the music box is flat now. docs/prologue.md Beat 5.
+	_house_call("set_midnight", true)
+	_house_call("set_wardrobe_dread", false)
 	AudioDirector.play_lock()
+	AudioDirector.play_musicbox_30th()
 	_say('MUM (downstairs): "Is everything alright? I thought I heard something."', 4.0)
 	_prompt.text = "[E] PUSH THEM IN — hide them!  (4 seconds)"
 	_mom_timer = 6.0
 	Clock.roll_to_30th()
-	AudioDirector.play_musicbox_30th()
 
 
 func _do_push() -> void:
@@ -600,6 +863,7 @@ func _start_fall() -> void:
 	GameState.falling = true
 	_prompt.text = ""
 	_sub.text = ""
+	AudioDirector.stop_ambience(0.8)
 	player.can_move = false
 	player.set_physics_process(false)
 	_tunnel.visible = true
@@ -620,10 +884,16 @@ func _start_fall() -> void:
 func _show_title() -> void:
 	state = S.TITLE
 	GameState.finished = true
+	# Black card, not a shot of the tunnel. The backdrop sits under the title
+	# and over the world, so nothing pokes through the type.
+	_title_bg.visible = true
 	_title.visible = true
+	_title_sub.text = "ACT I — THE CAVERN"
 	_hud_clock.text = ""
-	_prompt.text = "[R] watch again    [N] descend"
-	_say("a crowd of children cheering, slightly out of time. far away.", 6.0)
+	_title_t = 0.0
+	_prompt.text = "[ENTER] continue        [R] replay"
+	AudioDirector.play_bad_cheer(true)
+	_say("", 0.1)
 	_fade_to(0.0, 2.5)
 	_title_label.text = "FEBRUARY 30th"
 	# pulse the title like a bad VHS
@@ -632,10 +902,49 @@ func _show_title() -> void:
 	tw.tween_property(_title_label, "modulate:a", 1.0, 0.9)
 
 
+func _go_cavern() -> void:
+	if _going:
+		return
+	_going = true
+	get_tree().change_scene_to_file("res://scenes/cavern.tscn")
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if state == S.TITLE and event is InputEventKey and event.is_pressed():
-		match (event as InputEventKey).physical_keycode:
+	# Click to recapture the mouse after alt-tab or a menu. This is the
+	# failure that made the camera look broken in playtest.
+	if event is InputEventMouseButton and event.is_pressed() \
+			and event.button_index == MOUSE_BUTTON_LEFT:
+		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED \
+				and not _mouse_free and not (_pause != null and _pause.is_open()) \
+				and not (_dlg != null and _dlg.is_choosing()) \
+				and state not in [S.SELECT, S.TITLE]:
+			player.capture_mouse()
+			get_viewport().set_input_as_handled()
+			return
+
+	if state != S.TITLE:
+		return
+	if event is InputEventKey and event.is_pressed() and not event.is_echo():
+		var ke := event as InputEventKey
+		var k: int = ke.physical_keycode
+		if k == 0:
+			k = ke.keycode
+		match k:
 			KEY_R:
 				get_tree().reload_current_scene()
-			KEY_N:
-				get_tree().change_scene_to_file("res://scenes/cavern.tscn")
+			KEY_ENTER, KEY_KP_ENTER, KEY_SPACE, KEY_E, KEY_N:
+				_go_cavern()
+	elif event is InputEventMouseButton and event.is_pressed():
+		_go_cavern()
+
+
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_APPLICATION_FOCUS_IN:
+		return
+	if state in [S.SELECT, S.TITLE] or _mouse_free:
+		return
+	if _pause != null and _pause.is_open():
+		return
+	if _dlg != null and _dlg.is_choosing():
+		return
+	player.capture_mouse()

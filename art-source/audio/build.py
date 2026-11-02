@@ -159,6 +159,23 @@ def fade(sig, in_s=0.01, out_s=0.05):
     return out
 
 
+def loopify(sig, xfade=2.0):
+    """Crossfade the tail into the head so a looping bed has no seam.
+
+    A bed that clicks every 30 seconds is worse than no bed at all, and a
+    crossfade is four lines. The returned buffer is `len(sig) - xfade`.
+    """
+    n = len(sig)
+    x = min(int(SR * xfade), n // 3)
+    if x <= 0:
+        return sig
+    out = list(sig[:n - x])
+    for i in range(x):
+        a = i / float(x)
+        out[i] = sig[i] * a + sig[n - x + i] * (1.0 - a)
+    return out
+
+
 def envelope(n, attack=0.01, decay=0.3, curve=3.0):
     a = max(1, int(SR * attack))
     out = []
@@ -351,9 +368,12 @@ def bad_cheer(durations=1.0, voices=6, seed=17):
         offset = v * 0.085
         mix(out, voice, offset, gain=gain)
 
-    # 40 Hz ring modulation is what makes it read as *broken* rather than loud
-    lfo = sine(40.0, len(out), 0.35)
-    out = [(s + l * math.sin(TAU * 40.0 * i / SR) * 0.5) for i, s in enumerate(out)]
+    # 40 Hz ring modulation is what makes it read as *broken* rather than loud.
+    # NOTE: this used to call sine(40.0, len(out), ...), which passes a sample
+    # count where sine() expects seconds -- it tried to allocate ~500 million
+    # samples and the whole build hung before bad_cheer_near/far existed.
+    for i in range(len(out)):
+        out[i] *= 0.55 + 0.45 * math.sin(TAU * 40.0 * i / SR)
 
     out = convolve(out, hallway_ir(1.2, seed=5))
     return fade(normalise(out, 0.8), in_s=0.01, out_s=0.35)
@@ -441,6 +461,121 @@ def footsteps(count=6, seed=61):
     return fade(normalise(out, 0.5), in_s=0.002, out_s=0.25)
 
 
+def prologue_bed(seconds=32.0, seed=71):
+    """The house at night. This is the bed under the entire prologue.
+
+    Not music. A sub drone with a very slow beat, a band-limited wind, a thin
+    high whine that is almost inaudible, and four creaks placed so they never
+    fall on the loop point. The window is the only moving thing in the room
+    and this is what it sounds like.
+
+    Docs/art-direction.md §10: "Bedroom ambience. Real room tone, minus one
+    band. The absence is the part that registers."
+    """
+    rng = random.Random(seed)
+    n = int(SR * seconds)
+    out = [0.0] * n
+
+    for i in range(n):
+        t = i / SR
+        s = 0.0
+        # sub drone, two frequencies a third of a hertz apart: a slow beat
+        s += 0.055 * math.sin(TAU * 43.6 * t)
+        s += 0.050 * math.sin(TAU * 43.9 * t)
+        s += 0.022 * math.sin(TAU * 65.4 * t)
+        # the thin whine. 0.006 is barely a sound; that is the point.
+        s += 0.006 * math.sin(TAU * 1975.0 * t) * (0.5 + 0.5 * math.sin(TAU * t / seconds))
+        out[i] = s
+
+    # Wind: filtered noise, swelling four times across the loop, so the
+    # loop point is a zero crossing of the LFO and not a discontinuity.
+    wind = one_pole_lowpass(noise(seconds, 1.0, seed=seed), 320)
+    for i in range(n):
+        t = i / SR
+        swell = 0.5 + 0.5 * math.sin(TAU * 4.0 * t / seconds - math.pi / 2.0)
+        out[i] += wind[i] * swell * 0.055
+
+    # Four creaks. Fixed positions keep them out of the crossfade window.
+    for k, at in enumerate((4.2, 11.7, 19.4, 26.1)):
+        body = noise(0.22, 1.0, seed=seed + k * 13)
+        body = one_pole_lowpass(body, 800)
+        body = resonance(body, 150 + k * 22, q=1.5)
+        body = [s * e for s, e in zip(body, envelope(len(body), 0.004, 0.16, 4.0))]
+        mix(out, body, at, 0.20)
+
+    # One reversed swell, far away, entering rather than leaving.
+    rev = noise(2.4, 1.0, seed=seed + 91)
+    rev = one_pole_lowpass(rev, 520)
+    rev = list(reversed(rev))
+    env = envelope(len(rev), 0.01, 0.9, 1.4)
+    rev = [s * e for s, e in zip(rev, env)]
+    mix(out, rev, 14.0, 0.10)
+
+    out = loopify(out, xfade=2.5)
+    return normalise(out, 0.55)
+
+
+def wardrobe_creak(seconds=1.8, seed=83):
+    """A wardrobe hinge, close. Wood under tension, then the latch.
+
+    A creak is noise through a resonator whose frequency rises as the door
+    moves. Our `resonance` is fixed, so this is a hand-written sweep.
+    """
+    n = int(SR * seconds)
+    rng = random.Random(seed)
+    out = []
+    phase = 0.0
+    for i in range(n):
+        u = i / n
+        # hinge pitch rises as the door swings out, then sticks near the end
+        f = 110.0 + 420.0 * (u ** 0.65)
+        phase += TAU * f / SR
+        env = math.sin(math.pi * min(1.0, u * 1.05)) ** 1.6
+        body = 0.55 * math.sin(phase) + 0.20 * math.sin(phase * 2.01)
+        grit = (rng.random() * 2.0 - 1.0) * 0.13
+        out.append((body + grit) * env)
+
+    # The latch at the very end: one small wooden click.
+    click = noise(0.06, 1.0, seed=seed + 5)
+    click = one_pole_lowpass(click, 2200)
+    click = [s * e for s, e in zip(click, envelope(len(click), 0.001, 0.05, 6.0))]
+    mix(out, click, seconds - 0.16, 0.55)
+
+    out = convolve(out, hallway_ir(1.2, seed=seed + 1))
+    return fade(normalise(out, 0.7), in_s=0.01, out_s=0.25)
+
+
+def dread_rise(seconds=6.5, seed=97):
+    """Something changes. Rising, unresolved, and cut before it lands.
+
+    Used under the knocks. There is no jump: the cue simply stops, which is
+    cheaper and worse than any sting.
+    """
+    n = int(SR * seconds)
+    out = [0.0] * n
+    cluster = (55.0, 58.3, 61.8, 82.4)
+    for i in range(n):
+        t = i / SR
+        u = t / seconds
+        amp = (u ** 2.2) * 0.16
+        s = 0.0
+        for k, f in enumerate(cluster):
+            s += math.sin(TAU * f * t + k * 1.7) * (1.0 - k * 0.12)
+        # a high shimmer arrives last and is the part that raises the neck
+        s += 0.10 * math.sin(TAU * 1244.5 * t) * (u ** 4.0)
+        s += 0.06 * math.sin(TAU * 1318.5 * t) * (u ** 4.0)
+        out[i] = s * amp
+
+    # Air, rising. Low-passed noise whose cutoff opens as it climbs.
+    air = noise(seconds, 1.0, seed=seed)
+    lp = one_pole_lowpass(air, 500)
+    out = [a + 0.11 * l * (i / n) for i, (a, l) in enumerate(zip(out, lp))]
+
+    # Hard stop: 80 ms fade at the end, not a musical decay.
+    out = fade(out, in_s=0.4, out_s=0.08)
+    return normalise(out, 0.7)
+
+
 # ---------------------------------------------------------------- main
 
 CUES = [
@@ -454,6 +589,9 @@ CUES = [
     ('static_voice', lambda: static_voice()),
     ('bedroom_ambience', lambda: bedroom_ambience()),
     ('footsteps', lambda: footsteps()),
+    ('prologue_bed', lambda: prologue_bed()),
+    ('wardrobe_creak', lambda: wardrobe_creak()),
+    ('dread_rise', lambda: dread_rise()),
 ]
 
 

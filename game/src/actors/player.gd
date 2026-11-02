@@ -22,13 +22,19 @@ const EYE_CROUCH := 0.95
 const MOUSE_SENS := 0.0022
 ## Look sensitivity while crouched drops 40%. docs/tech-stack.md §8.3 rule 3.
 const CROUCH_SENS_MULT := 0.6
-const WALK_SPEED := 1.8
+const WALK_SPEED := 2.2
 const CROUCH_SPEED := 0.6
 const SPRINT_SPEED := 4.2
 const GRAVITY := 9.8
 const JUMP_VELOCITY := 4.2
 
 var can_move := true
+
+## The torch. It is the only shadow-casting light in the game, which is the
+## one exception docs/art-direction.md §7 allows. Starting it off means the
+## house is genuinely dark until the player chooses to see it.
+var flashlight_available := false
+var flashlight_on := false
 
 ## Act 1 stamina. Off unless the director enables it.
 var stamina_enabled := false
@@ -52,18 +58,31 @@ func _ready() -> void:
 	cam.fov = 70.0
 	cam.near = 0.05
 	cam.far = 40.0
-	flash.spot_range = 11.0
-	flash.spot_angle = 26.0
-	flash.spot_attenuation = 1.4
-	flash.light_energy = 2.6
-	flash.shadow_enabled = false      # no shadow maps, ever. docs/art-direction.md §7
+	flash.spot_range = 7.0
+	flash.spot_angle = 34.0
+	flash.spot_attenuation = 1.6
+	flash.light_energy = 1.45
+	# The single permitted shadow map. It is what turns boxes into rooms:
+	# without it a torch is just a bright decal on a flat wall.
+	flash.shadow_enabled = true
+	flash.shadow_bias = 0.04
+	flash.shadow_normal_bias = 1.4
 	flash.visible = false
+	floor_snap_length = 0.45
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# The prologue hands the torch over after you get out of bed. Toggle is a
+	# deliberate change from the held verb in other levels: a dark house with
+	# one hand on the keyboard is not a place to ask the player to hold F.
+	if event.is_action_pressed("flashlight") and flashlight_available:
+		flashlight_on = not flashlight_on
+		flash.visible = flashlight_on
+		return
+
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		var sens := MOUSE_SENS
+		var sens := MOUSE_SENS * clampf(GameState.mouse_sensitivity, 0.2, 5.0)
 		if _crouch_t > 0.5:
 			sens *= CROUCH_SENS_MULT
 		rotate_y(-event.relative.x * sens)
@@ -74,7 +93,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventScreenDrag:
 		var half := get_viewport().get_visible_rect().size.x * 0.5
 		if event.position.x > half:
-			var sens := MOUSE_SENS * 1.6
+			var sens := MOUSE_SENS * 1.6 * clampf(GameState.mouse_sensitivity, 0.2, 5.0)
 			if _crouch_t > 0.5:
 				sens *= CROUCH_SENS_MULT
 			rotate_y(-event.relative.x * sens)
@@ -156,7 +175,14 @@ func _physics_process(delta: float) -> void:
 
 
 func _flashlight() -> void:
-	flash.visible = Input.is_action_pressed("flashlight")
+	flash.visible = flashlight_on
+
+
+## Called by the prologue when the child gets up: the torch is now yours.
+func set_flashlight(on: bool) -> void:
+	flashlight_available = true
+	flashlight_on = on
+	flash.visible = on
 
 
 ## How far a ghoul can hear this frame.
@@ -195,7 +221,14 @@ func look_at_point(p: Vector3) -> void:
 	var target_yaw := atan2(-dir.x, -dir.z)
 	var target_pitch := clampf(atan2(dir.y, Vector2(dir.x, dir.z).length()), -1.45, 1.45)
 	rotation.y = target_yaw
-	_pitch = target_pitch
+	set_pitch(target_pitch)
+
+
+## Set the pitch and keep the internal value in sync. Setting head.rotation.x
+## directly leaves _pitch stale, so the next mouse movement snaps the camera
+## back to the old angle -- the bug that made waking up feel broken.
+func set_pitch(p: float) -> void:
+	_pitch = clampf(p, -1.45, 1.45)
 	head.rotation.x = _pitch
 
 
