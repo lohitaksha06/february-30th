@@ -576,6 +576,41 @@ def dread_rise(seconds=6.5, seed=97):
     return normalise(out, 0.7)
 
 
+def heartbeat(seconds=8.0, bpm=60.0, seed=113):
+    """A slow two-thump heartbeat. Loops at exactly `seconds` with 60 BPM.
+
+    Starts when the knocking starts and gets louder when the lock turns. The
+    player should not be able to say when it began.
+    """
+    n = int(SR * seconds)
+    out = [0.0] * n
+    beat = 60.0 / bpm
+    k = 0
+    while k * beat < seconds - 0.01:
+        t0 = k * beat
+        for off, amp in ((0.0, 0.95), (0.17, 0.58)):
+            dur = 0.24
+            m = int(SR * dur)
+            start = int((t0 + off) * SR)
+            for i in range(m):
+                if start + i >= n:
+                    break
+                t = i / SR
+                # soft attack, hard decay: a closed fist, not a kick drum
+                atk = min(1.0, t / 0.008)
+                env = atk * math.exp(-t * 17.0)
+                s = 0.85 * math.sin(TAU * 51.0 * t)
+                s += 0.25 * math.sin(TAU * 102.0 * t)
+                s += 0.10 * math.sin(TAU * 27.0 * t)
+                out[start + i] += s * env * amp
+        k += 1
+
+    out = one_pole_lowpass(out, 240)
+    # No fade at the loop point: the last beat has decayed by then and the
+    # first beat starts from silence. A fade would punch a hole in the pulse.
+    return normalise(out, 0.55)
+
+
 # ---------------------------------------------------------------- main
 
 CUES = [
@@ -592,6 +627,7 @@ CUES = [
     ('prologue_bed', lambda: prologue_bed()),
     ('wardrobe_creak', lambda: wardrobe_creak()),
     ('dread_rise', lambda: dread_rise()),
+    ('heartbeat', lambda: heartbeat()),
 ]
 
 

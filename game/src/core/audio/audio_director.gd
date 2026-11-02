@@ -22,9 +22,11 @@ var _ambience: AudioStreamPlayer
 var _creak: AudioStreamPlayer
 var _dread: AudioStreamPlayer
 var _cheer: AudioStreamPlayer
+var _heart: AudioStreamPlayer
 
 var _music_tw: Tween
 var _amb_tw: Tween
+var _heart_tw: Tween
 
 
 func _ready() -> void:
@@ -38,6 +40,7 @@ func _ready() -> void:
 	_creak = _mk("Creak")
 	_dread = _mk("Dread")
 	_cheer = _mk("Cheer")
+	_heart = _mk("Heart")
 	_music.volume_db = -8.0
 	_knock.volume_db = -2.0
 	_chase.volume_db = -4.0
@@ -45,6 +48,7 @@ func _ready() -> void:
 	_creak.volume_db = -5.0
 	_dread.volume_db = -10.0
 	_cheer.volume_db = -16.0
+	_heart.volume_db = -60.0
 
 
 func _mk(n: String) -> AudioStreamPlayer:
@@ -158,6 +162,40 @@ func play_dread() -> void:
 		return
 	_dread.stream = s
 	_dread.play()
+
+
+## A slow heartbeat under the knocks. Starts quiet enough that the player
+## cannot say when it began; docs/art-direction.md §10.
+func play_heartbeat() -> void:
+	var s := _load_loop("res://assets/audio/heartbeat.wav")
+	if s == null:
+		return
+	_heart.stream = s
+	_heart.volume_db = -34.0
+	_heart.play()
+	if _heart_tw != null and _heart_tw.is_valid():
+		_heart_tw.kill()
+	_heart_tw = create_tween()
+	_heart_tw.tween_property(_heart, "volume_db", -17.0, 4.0)
+
+
+func raise_heartbeat(level := -9.0, fade := 2.0) -> void:
+	if not _heart.playing:
+		return
+	if _heart_tw != null and _heart_tw.is_valid():
+		_heart_tw.kill()
+	_heart_tw = create_tween()
+	_heart_tw.tween_property(_heart, "volume_db", level, fade)
+
+
+func stop_heartbeat(fade := 2.0) -> void:
+	if not _heart.playing:
+		return
+	if _heart_tw != null and _heart_tw.is_valid():
+		_heart_tw.kill()
+	_heart_tw = create_tween()
+	_heart_tw.tween_property(_heart, "volume_db", -60.0, fade)
+	_heart_tw.tween_callback(_heart.stop)
 
 
 func play_musicbox_30th() -> void:

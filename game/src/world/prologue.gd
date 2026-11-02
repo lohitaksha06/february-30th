@@ -600,6 +600,7 @@ func _start_knocks() -> void:
 		return
 	AudioDirector.play_dread()
 	AudioDirector.play_knock(3, 0.3)
+	AudioDirector.play_heartbeat()
 	_say("knock. knock. knock.   ...   knock. knock. knock.", 4.0)
 	_knock_ready = true
 	_prompt.text = "[E] open the wardrobe"
@@ -836,6 +837,7 @@ func _start_mom() -> void:
 	_house_call("set_wardrobe_dread", false)
 	AudioDirector.play_lock()
 	AudioDirector.play_musicbox_30th()
+	AudioDirector.raise_heartbeat(-9.0, 2.0)
 	_say('MUM (downstairs): "Is everything alright? I thought I heard something."', 4.0)
 	_prompt.text = "[E] PUSH THEM IN — hide them!  (4 seconds)"
 	_mom_timer = 6.0
@@ -864,6 +866,7 @@ func _start_fall() -> void:
 	_prompt.text = ""
 	_sub.text = ""
 	AudioDirector.stop_ambience(0.8)
+	AudioDirector.stop_heartbeat(1.0)
 	player.can_move = false
 	player.set_physics_process(false)
 	_tunnel.visible = true
